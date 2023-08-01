@@ -16,8 +16,8 @@
 		
 
 		<!-- NuGet -->
-		<Authors>jfversluis</Authors>
-		<Copyright>Copyright © jfversluis and contributors</Copyright>
+		<Authors>yurkinh</Authors>
+		<Copyright>Copyright © yurkinh and contributors</Copyright>
 		<IsPackable>True</IsPackable>
 		<PackageProjectUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</RepositoryUrl>
@@ -32,7 +32,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<DebugType>portable</DebugType>
-		<PackageIcon>icon.png</PackageIcon>
+		<PackageIcon>nuget.png</PackageIcon>
 	</PropertyGroup>
 
 
@@ -76,5 +76,9 @@
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    <PrivateAssets>all</PrivateAssets>
 	  </PackageReference>
+	</ItemGroup>
+	<!-- Package additions -->
+	<ItemGroup>
+		<None Include="..\..\nuget.png" PackagePath="nuget.png" Pack="true" />
 	</ItemGroup>
 </Project>
