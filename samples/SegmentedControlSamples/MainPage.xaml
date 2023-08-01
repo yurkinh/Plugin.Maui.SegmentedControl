@@ -5,7 +5,7 @@
              x:Class="SegmentedControlSamples.MainPage">
 
     <VerticalStackLayout x:Name="segContainer"  HorizontalOptions="Fill">
-    <controls:SegmentedControl x:Name="SegControl" ValueChanged="Handle_ValueChanged" HorizontalOptions="Fill" WidthRequest="350">
+    <controls:SegmentedControl x:Name="SegControl" ValueChanged="Handle_ValueChanged" HorizontalOptions="Fill" WidthRequest="{OnPlatform Android=350}">
         <controls:SegmentedControl.Children>
             <controls:SegmentedControlOption Text="Tab1"  />
             <controls:SegmentedControlOption Text="Tab2" />
