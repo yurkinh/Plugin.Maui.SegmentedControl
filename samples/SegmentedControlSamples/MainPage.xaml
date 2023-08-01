@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+             x:Class="SegmentedControlSamples.MainPage">
+
+    <VerticalStackLayout x:Name="segContainer"  HorizontalOptions="Fill">
+    <controls:SegmentedControl x:Name="SegControl" ValueChanged="Handle_ValueChanged" HorizontalOptions="Fill" WidthRequest="350">
+        <controls:SegmentedControl.Children>
+            <controls:SegmentedControlOption Text="Tab1"  />
+            <controls:SegmentedControlOption Text="Tab2" />
+            <controls:SegmentedControlOption Text="Tab3" />
+            <controls:SegmentedControlOption Text="Attachments"  />
+        </controls:SegmentedControl.Children>
+    </controls:SegmentedControl>
+    <StackLayout x:Name="SegContent" />
+        </VerticalStackLayout>
+
+</ContentPage>
+

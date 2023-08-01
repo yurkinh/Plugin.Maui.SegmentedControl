@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>		
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		
+
+		<!-- NuGet -->
+		<Authors>jfversluis</Authors>
+		<Copyright>Copyright © jfversluis and contributors</Copyright>
+		<IsPackable>True</IsPackable>
+		<PackageProjectUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>dotnet-maui;maui;segmented;segment;segmentedtcontrol</PackageTags>
+		<IncludeSymbols>True</IncludeSymbols>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Title>.NET MAUI Segmented Control Plugin</Title>
+		<Description>Segmented Control for a .NET MAUI application.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<DebugType>portable</DebugType>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="Control\" />
+	  <None Remove="Platforms\iOS\" />
+	  <None Remove="Platforms\Android\" />
+	  <None Remove="Platforms\Android\Resources\color\segmented_control_text.xml" />
+	  <None Remove="Platforms\Android\Resources\drawable\segmented_control_background.xml" />
+	  <None Remove="Platforms\Android\Resources\drawable\segmented_control_first_background.xml" />
+	  <None Remove="Platforms\Android\Resources\drawable\segmented_control_last_background.xml" />
+	  <None Remove="Platforms\Android\Resources\layout\RadioButton.axml" />
+	  <None Remove="Platforms\Android\Resources\layout\RadioGroup.axml" />
+	  <None Remove="Platforms\Android\Resources\values\colors.xml" />
+	  <None Remove="Extensions\" />
+	  <None Remove="Platforms\MacCatalyst\" />
+	  <None Remove="Handlers\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Control\" />
+	  <Folder Include="Platforms\iOS\" />
+	  <Folder Include="Platforms\Android\" />
+	  <Folder Include="Extensions\" />
+	  <Folder Include="Platforms\MacCatalyst\" />
+	  <Folder Include="Handlers\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <AndroidResource Include="Platforms\Android\Resources\color\segmented_control_text.xml" />
+	  <AndroidResource Include="Platforms\Android\Resources\drawable\segmented_control_background.xml" />
+	  <AndroidResource Include="Platforms\Android\Resources\drawable\segmented_control_first_background.xml" />
+	  <AndroidResource Include="Platforms\Android\Resources\drawable\segmented_control_last_background.xml" />
+	  <AndroidResource Include="Platforms\Android\Resources\layout\RadioButton.axml" />
+	  <AndroidResource Include="Platforms\Android\Resources\layout\RadioGroup.axml" />
+	  <AndroidResource Include="Platforms\Android\Resources\values\colors.xml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	</ItemGroup>
+</Project>
