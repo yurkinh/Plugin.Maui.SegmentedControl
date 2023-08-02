@@ -12,6 +12,9 @@
 |Android|Yes|API 18+|RadioGroup|
 |Mac OS  |Yes| 11.0+|UISegmentedControl|
 
+### Screenshot
+![Screenshot](https://github.com/yurkinh/Plugin.Maui.SegmentedControl/assets/17849938/d184c9a2-093c-4bc9-8546-35dfe0c5de87)
+
 #### Usage
 
 In your MaiuProgram file call:
