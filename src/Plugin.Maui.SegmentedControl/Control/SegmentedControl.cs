@@ -27,7 +27,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         set { SetValue(DisabledColorProperty, value); }
     }
 
-    public static readonly BindableProperty SelectedTextColorProperty = BindableProperty.Create(nameof(SelectedTextColor), typeof(Color), typeof(SegmentedControl), Colors.White);
+    public static readonly BindableProperty SelectedTextColorProperty = BindableProperty.Create(nameof(SelectedTextColor), typeof(Color), typeof(SegmentedControl), Colors.Black);
 
     public Color SelectedTextColor
     {
