@@ -81,5 +81,6 @@
 	<!-- Package additions -->
 	<ItemGroup>
 		<None Include="..\..\nuget.png" PackagePath="nuget.png" Pack="true" />
+		<None Include="..\..\README.md" Pack="true"/>
 	</ItemGroup>
 </Project>
