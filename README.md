@@ -1,7 +1,7 @@
 # Plugin.Maui.SegmentedControl
 .NET MAUI Port of Alex Rainman XF Segmented control https://github.com/alexrainman/SegmentedControl
 ### Setup
-* Available on NuGet: https://www.nuget.org/packages/SegmentedControl.FormsPlugin/ [![NuGet](https://img.shields.io/nuget/v/SegmentedControl.FormsPlugin.svg?label=NuGet)](https://www.nuget.org/packages/SegmentedControl.FormsPlugin/)
+* Available on NuGet: https://www.nuget.org/packages/Plugin.Maui.SegmentedControl/
 
 
 **Platform Support**
