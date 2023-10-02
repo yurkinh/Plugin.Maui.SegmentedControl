@@ -1,0 +1,33 @@
+name: Create a release on NuGet
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - "v[0-9]+.[0-9]+.[0-9]+"    
+jobs:
+  release-nuget:
+  
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Verify commit exists in origin/main
+        run: |
+          git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+          git branch --remote --contains | grep origin/main
+      - name: Set VERSION variable from tag
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV      
+      - name: Install .NET MAUI
+        run: dotnet workload install maui
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Get version information from tag
+        id: get_version
+        uses: battila7/get-version-action@v2
+      - name: Pack
+        run: msbuild -t:pack -r src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.sln -property:Configuration=Release
+      - name: Push
+        run: dotnet nuget push src\Plugin.Maui.SegmentedControl\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.NUGET_API_KEY }}
