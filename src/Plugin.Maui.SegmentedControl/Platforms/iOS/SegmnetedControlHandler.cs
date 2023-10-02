@@ -58,7 +58,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
 
     static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.TintColor = control.IsEnabled ? control.TintColor.ToPlatform() : control.DisabledColor.ToPlatform();
+        handler.PlatformView.SelectedSegmentTintColor = control.IsEnabled ? control.TintColor.ToPlatform() : control.DisabledColor.ToPlatform();
     }
 
     static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
