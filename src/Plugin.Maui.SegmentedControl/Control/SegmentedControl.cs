@@ -35,6 +35,14 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         set { SetValue(SelectedTextColorProperty, value); }
     }
 
+    public static readonly BindableProperty TextColorProperty = BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(SegmentedControl), Colors.Black);
+
+    public Color TextColor
+    {
+        get { return (Color)GetValue(TextColorProperty); }
+        set { SetValue(TextColorProperty, value); }
+    }
+
     public static readonly BindableProperty SelectedSegmentProperty = BindableProperty.Create(nameof(SelectedSegment), typeof(int), typeof(SegmentedControl), 0);
 
     public int SelectedSegment

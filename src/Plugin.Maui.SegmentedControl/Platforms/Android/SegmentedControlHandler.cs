@@ -19,6 +19,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         [nameof(SegmentedControl.SelectedSegment)] = MapSelectedSegment,
         [nameof(SegmentedControl.TintColor)] = MapTintColor,
         [nameof(SegmentedControl.SelectedTextColor)] = MapSelectedTextColor,
+        [nameof(SegmentedControl.TextColor)] = MapTextColor
     };
 
     public SegmentedControlHandler() : base(Mapper)
@@ -151,6 +152,15 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     {
         var v = (RadioButton)handler.PlatformView.GetChildAt(control.SelectedSegment);
         v.SetTextColor(control.SelectedTextColor.ToPlatform());
+    }
+
+    static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        for (int i = 0; i < handler.PlatformView.ChildCount; i++)
+        {
+            var v = (RadioButton)handler.PlatformView.GetChildAt(i);
+            if (i != control.SelectedSegment) v.SetTextColor(control.TextColor.ToPlatform());
+        }
     }
 
     static void OnPropertyChanged(SegmentedControlHandler handler, SegmentedControl control)

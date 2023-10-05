@@ -13,6 +13,7 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
         [nameof(SegmentedControl.SelectedSegment)] = MapSelectedSegment,
         [nameof(SegmentedControl.TintColor)] = MapTintColor,
         [nameof(SegmentedControl.SelectedTextColor)] = MapSelectedTextColor,
+        [nameof(SegmentedControl.TextColor)] = MapTextColor
     };
 
     public SegmentedControlHandler() : base(Mapper)
@@ -58,7 +59,7 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
 
     static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.TintColor = control.IsEnabled ? control.TintColor.ToPlatform() : control.DisabledColor.ToPlatform();
+        handler.PlatformView.SelectedSegmentTintColor = control.IsEnabled ? control.TintColor.ToPlatform() : control.DisabledColor.ToPlatform();
     }
 
     static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
@@ -76,6 +77,11 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = control.SelectedTextColor.ToPlatform() }, UIControlState.Selected);
+    }
+
+    static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = control.TextColor.ToPlatform() }, UIControlState.Normal);
     }
 
 }
