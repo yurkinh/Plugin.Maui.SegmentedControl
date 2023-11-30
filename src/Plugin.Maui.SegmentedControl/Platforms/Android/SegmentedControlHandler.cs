@@ -92,7 +92,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
             var rb = (RadioButton)rg.GetChildAt(radioId);
 
-            var color = VirtualView.IsEnabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledColor.ToPlatform();
+            var color = VirtualView.IsEnabled ? VirtualView.TextColor.ToPlatform() : VirtualView.DisabledColor.ToPlatform();
             _rb?.SetTextColor(color);
             rb.SetTextColor(VirtualView.SelectedTextColor.ToPlatform());
             _rb = rb;
