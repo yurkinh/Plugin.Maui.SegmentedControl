@@ -151,7 +151,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         var v = (RadioButton)handler.PlatformView.GetChildAt(control.SelectedSegment);
-        v.SetTextColor(control.SelectedTextColor.ToPlatform());
+        v?.SetTextColor(control.SelectedTextColor.ToPlatform());
     }
 
     static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
