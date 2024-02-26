@@ -16,7 +16,7 @@
 		<Authors>yurkinh</Authors>
 		<Copyright>Copyright © yurkinh and contributors</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageVersion>1.0.7</PackageVersion>
+		<PackageVersion>1.0.8</PackageVersion>
 		<IsPackable>True</IsPackable>
 		<PackageProjectUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</RepositoryUrl>
@@ -32,7 +32,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<DebugType>portable</DebugType>
 		<PackageIcon>nuget.png</PackageIcon>
-		<PackageReleaseNotes>Fixed Android TintColor issue. NET 8 Support</PackageReleaseNotes>
+		<PackageReleaseNotes>Fixed crash on Android when SelectedSegmented="-1" (deselected)</PackageReleaseNotes>
 	</PropertyGroup>
 
 
