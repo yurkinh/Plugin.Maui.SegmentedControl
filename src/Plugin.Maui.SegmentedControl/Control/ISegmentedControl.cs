@@ -2,10 +2,42 @@
 
 public interface ISegmentedControl: IView
 {
+    /// <summary>
+    /// Tint color of selected segment
+    /// </summary>
     public Color TintColor { get; set; }
-    public Color DisabledColor { get; set; }
-    public Color SelectedTextColor { get; set; }
+    
+    /// <summary>
+    /// Text color of unselected segment
+    /// </summary>
     public Color TextColor { get; set; }
+    
+    /// <summary>
+    /// Text color of selected segment
+    /// </summary>
+    public Color SelectedTextColor { get; set; }
+
+    /// <summary>
+    /// Background color of disabled unselected segment
+    /// </summary>
+    public Color DisabledBackgroundColor { get; set; }
+
+    /// <summary>
+    /// Text color of disabled segment (selected or not)
+    /// </summary>
+    public Color DisabledTextColor { get; set; }
+
+
+    /// <summary>
+    /// Tint color of disabled selected segment
+    /// </summary>
+    public Color DisabledTintColor { get; set; }
+
     public int SelectedSegment { get; set; }
+}
+
+public interface ISegmentedControlOption : IView
+{
+    public string Text { get; set; }
 }
 
