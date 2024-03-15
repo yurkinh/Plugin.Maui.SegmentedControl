@@ -246,8 +246,10 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
                 VirtualView.DisabledTintColor.ToPlatform();
         }
 
+        var bc = VirtualView.BackgroundColor ?? Colors.White;
+
         return enabled ?
-            VirtualView.BackgroundColor.ToPlatform()
+            bc.ToPlatform()
             : VirtualView.DisabledBackgroundColor.ToPlatform();
     }
 

@@ -46,6 +46,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
                 segmentedControl.Children.Add(newSegment);
             }
         }
+        
     }
     public IList<SegmentedControlOption> Children
     {
@@ -88,15 +89,6 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
     {
         get { return (Color)GetValue(DisabledTintColorProperty); }
         set { SetValue(DisabledTintColorProperty, value); }
-    }
-
-    protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-    {
-        if(null!= Parent)
-        {
-            WidthRequest = Parent.GetVisualElementWindow().Width;
-        }
-        return base.OnMeasure(widthConstraint, heightConstraint);
     }
 
     public static readonly BindableProperty DisabledTextColorProperty = BindableProperty.Create(nameof(DisabledTextColor), typeof(Color), typeof(SegmentedControl), Colors.Gray);
