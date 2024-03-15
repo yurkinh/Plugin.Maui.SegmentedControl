@@ -138,7 +138,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
     {
         base.OnBindingContextChanged();
 
-        if (!(Children is null))
+        if (Children is not null)
         {
             foreach (var segment in Children)
             {

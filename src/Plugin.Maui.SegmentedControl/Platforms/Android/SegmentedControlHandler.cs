@@ -239,18 +239,15 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
     private Android.Graphics.Color GetTintColor(bool selected, bool enabled)
     {
-        if (selected)
-        {
-            return enabled ?
-                VirtualView.TintColor.ToPlatform() :
-                VirtualView.DisabledTintColor.ToPlatform();
-        }
-
-        var bc = VirtualView.BackgroundColor ?? Colors.White;
-
         return enabled ?
-            bc.ToPlatform()
-            : VirtualView.DisabledBackgroundColor.ToPlatform();
+            VirtualView.TintColor.ToPlatform() :
+            VirtualView.DisabledTintColor.ToPlatform();
+
+        // 'tint' is an outline + selected button color, so 
+        //the backgroundcolor for the segmented control can't be used as 'tint'
+
+        //TODO we should have a separate outline color 
+        // and ability to pick a background color for selected(checked) segment
     }
 
     private void SetTintColor(RadioButton rb, Android.Graphics.Color tintColor)
