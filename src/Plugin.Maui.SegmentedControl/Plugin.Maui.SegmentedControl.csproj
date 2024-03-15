@@ -58,8 +58,6 @@
 	  <None Remove="Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Control\" />
-	  <Folder Include="Platforms\iOS\" />
 	  <Folder Include="Platforms\Android\" />
 	  <Folder Include="Extensions\" />
 	  <Folder Include="Platforms\MacCatalyst\" />
@@ -75,7 +73,7 @@
 	  <AndroidResource Include="Platforms\Android\Resources\values\colors.xml" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+ 	  <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    <PrivateAssets>all</PrivateAssets>
 	  </PackageReference>
@@ -84,5 +82,11 @@
 	<ItemGroup>
 		<None Include="..\..\nuget.png" PackagePath="nuget.png" Pack="true" />
 		<None Include="..\..\README.md" PackagePath="README.md" Pack="true" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.10" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.10" />
 	</ItemGroup>
 </Project>
