@@ -17,19 +17,19 @@ public partial class MainPage : ContentPage
         {
             case 0:
                 SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "Items tab selected" });
+                SegContent.Children.Add(new SegControlTest1());
                 break;
             case 1:
                 SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "Notes tab selected" });
+                SegContent.Children.Add(new Label() { Text = "TEST 2 tab selected" });
                 break;
             case 2:
                 SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "Approvers tab selected" });
+                SegContent.Children.Add(new Label() { Text = "TEST 3 tab selected" });
                 break;
             case 3:
                 SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "Attachments tab selected" });
+                SegContent.Children.Add(new Label() { Text = "TEST 4  tab selected" });
                 break;
         }
     }    

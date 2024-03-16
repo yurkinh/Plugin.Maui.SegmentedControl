@@ -12,13 +12,12 @@
             SelectedTextColor="White"
             TextColor="Black"
             TintColor="Red"
-            ValueChanged="Handle_ValueChanged"
-            WidthRequest="{OnPlatform Android=350}">
+            ValueChanged="Handle_ValueChanged">
             <controls:SegmentedControl.Children>
-                <controls:SegmentedControlOption Text="Tab1" />
-                <controls:SegmentedControlOption Text="Tab2" />
-                <controls:SegmentedControlOption Text="Tab3" />
-                <controls:SegmentedControlOption Text="Attachments" />
+                <controls:SegmentedControlOption Text="Test 1" />
+                <controls:SegmentedControlOption Text="Test 2" />
+                <controls:SegmentedControlOption Text="Test 3" />
+                <controls:SegmentedControlOption Text="Test 4" />
             </controls:SegmentedControl.Children>
         </controls:SegmentedControl>
         <StackLayout x:Name="SegContent" />

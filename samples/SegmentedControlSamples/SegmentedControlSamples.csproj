@@ -63,4 +63,10 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Plugin.Maui.SegmentedControl\Plugin.Maui.SegmentedControl.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="SegControlTest1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
 </Project>

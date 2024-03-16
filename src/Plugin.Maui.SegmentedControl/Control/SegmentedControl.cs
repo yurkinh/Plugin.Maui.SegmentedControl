@@ -112,7 +112,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         set { SetValue(TextColorProperty, value); }
     }
 
-    public static readonly BindableProperty SelectedSegmentProperty = BindableProperty.Create(nameof(SelectedSegment), typeof(int), typeof(SegmentedControl), 0);
+    public static readonly BindableProperty SelectedSegmentProperty = BindableProperty.Create(nameof(SelectedSegment), typeof(int), typeof(SegmentedControl), -1);
 
     public int SelectedSegment
     {

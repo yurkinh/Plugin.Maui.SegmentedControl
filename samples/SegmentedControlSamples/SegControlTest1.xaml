@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+             x:Class="SegmentedControlSamples.SegControlTest1">
+    <ScrollView>
+        <VerticalStackLayout  x:Name="SegmentWithStack" 
+                              HorizontalOptions="CenterAndExpand"
+            Padding="5"
+            Spacing="5">
+            <Label Text="Segmented Control defaults, set up from code" />
+            <ctrl:SegmentedControl
+                x:Name="SegmentedControl" HorizontalOptions="FillAndExpand" >
+            </ctrl:SegmentedControl>
+
+                    <Button Text="Text Color" Clicked="Button_TextColor"/>
+                    <Button Text="Change First Item Text" Clicked="ChangeFirstText"/>
+                    <Button Text="Disable First Segment" Clicked="DisableFirstSegment_OnClicked"></Button>
+                    <Button Text="Enable First Segment" Clicked="EnableFirstSegment_OnClicked"></Button>
+                    <Button Text="Change Selected Segment" Clicked="ChangeSelectedSegment"></Button>
+                    <Button Text="Remove" Clicked="Button_OnClicked"></Button>
+                    <Button Text="Tint Color Change Button" Clicked="ButtonTintColor_OnClicked"></Button>
+                    <Button Text="Change Selected Text Color" Clicked="ButtonSelectedTextColor_OnClicked"></Button>
+                    <Button Text="Disable Segment Control" Clicked="Disable_OnClicked"></Button>
+                    <Button Text="Background Color Change Button" Clicked="ButtonBackgroundColor_OnClicked"></Button>
+                    <Button Text="Enable Segment Control" Clicked="Enable_OnClicked"></Button>
+                    <Button Text="Change Disabled Tint Color" Clicked="ChangeDisabledTintColor_OnClicked"></Button>
+                    <Button Text="Change Children from code" Clicked="ChangeChildren_Clicked" ></Button>
+                    <Button IsEnabled="False" Text="Change Border Color" Clicked="ButtonBorderColor_OnClicked"></Button>
+                    <Button IsEnabled="False" Text="Change Border Width" Clicked="ButtonBorderWidth_OnClicked"></Button>
+                    <Button IsEnabled="False" Text="Change Text Size" Clicked="ChangeTextSize_OnClicked"></Button>
+                    <Button IsEnabled="False" Text="Change Font Family" Clicked="ChangeFontFamily_OnClicked"></Button>
+         
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>
