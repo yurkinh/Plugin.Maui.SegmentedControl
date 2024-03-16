@@ -3,34 +3,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
              x:Class="SegmentedControlSamples.SegControlTest1">
-    <ScrollView>
-        <VerticalStackLayout  x:Name="SegmentWithStack" 
+        <Grid  x:Name="SegmentWithStack" 
                               HorizontalOptions="CenterAndExpand"
+                              VerticalOptions="StartAndExpand"
+              
             Padding="5"
-            Spacing="5">
-            <Label Text="Segmented Control defaults, set up from code" />
-            <ctrl:SegmentedControl
+            RowSpacing="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Text="Segmented Control defaults, set up from code" />
+        <ctrl:SegmentedControl  Grid.Row="1"
                 x:Name="SegmentedControl" HorizontalOptions="FillAndExpand" >
             </ctrl:SegmentedControl>
 
-                    <Button Text="Text Color" Clicked="Button_TextColor"/>
-                    <Button Text="Change First Item Text" Clicked="ChangeFirstText"/>
-                    <Button Text="Disable First Segment" Clicked="DisableFirstSegment_OnClicked"></Button>
-                    <Button Text="Enable First Segment" Clicked="EnableFirstSegment_OnClicked"></Button>
-                    <Button Text="Change Selected Segment" Clicked="ChangeSelectedSegment"></Button>
-                    <Button Text="Remove" Clicked="Button_OnClicked"></Button>
-                    <Button Text="Tint Color Change Button" Clicked="ButtonTintColor_OnClicked"></Button>
-                    <Button Text="Change Selected Text Color" Clicked="ButtonSelectedTextColor_OnClicked"></Button>
-                    <Button Text="Disable Segment Control" Clicked="Disable_OnClicked"></Button>
-                    <Button Text="Background Color Change Button" Clicked="ButtonBackgroundColor_OnClicked"></Button>
-                    <Button Text="Enable Segment Control" Clicked="Enable_OnClicked"></Button>
-                    <Button Text="Change Disabled Tint Color" Clicked="ChangeDisabledTintColor_OnClicked"></Button>
-                    <Button Text="Change Children from code" Clicked="ChangeChildren_Clicked" ></Button>
-                    <Button IsEnabled="False" Text="Change Border Color" Clicked="ButtonBorderColor_OnClicked"></Button>
-                    <Button IsEnabled="False" Text="Change Border Width" Clicked="ButtonBorderWidth_OnClicked"></Button>
-                    <Button IsEnabled="False" Text="Change Text Size" Clicked="ChangeTextSize_OnClicked"></Button>
-                    <Button IsEnabled="False" Text="Change Font Family" Clicked="ChangeFontFamily_OnClicked"></Button>
-         
-        </VerticalStackLayout>
-    </ScrollView>
+        <Button Grid.Row="2" Text="Text Color" Clicked="Button_TextColor"/>
+        <Button Grid.Row="3" Text="Change First Item Text" Clicked="ChangeFirstText"/>
+        <Button Grid.Row="4" Text="Disable First Segment" Clicked="DisableFirstSegment_OnClicked"></Button>
+        <Button Grid.Row="5" Text="Enable First Segment" Clicked="EnableFirstSegment_OnClicked"></Button>
+        <Button Grid.Row="6" Text="Change Selected Segment" Clicked="ChangeSelectedSegment"></Button>
+        <Button Grid.Row="7" Text="Remove" Clicked="Button_OnClicked"></Button>
+        <Button Grid.Row="8" Text="Tint Color Change Button" Clicked="ButtonTintColor_OnClicked"></Button>
+        <Button Grid.Row="9"  Text="Change Selected Text Color" Clicked="ButtonSelectedTextColor_OnClicked"></Button>
+        <Button Grid.Row="10" Text="Disable Segment Control" Clicked="Disable_OnClicked"></Button>
+        <Button Grid.Row="11" Text="Background Color Change Button" Clicked="ButtonBackgroundColor_OnClicked"></Button>
+        <Button Grid.Row="12" Text="Enable Segment Control" Clicked="Enable_OnClicked"></Button>
+        <Button Grid.Row="13" Text="Change Disabled Tint Color" Clicked="ChangeDisabledTintColor_OnClicked"></Button>
+        <Button Grid.Row="14" Text="Change Children from code" Clicked="ChangeChildren_Clicked" ></Button>
+        <Button Grid.Row="15" IsEnabled="False" Text="Change Border Color" Clicked="ButtonBorderColor_OnClicked"></Button>
+        <Button Grid.Row="16" IsEnabled="False" Text="Change Border Width" Clicked="ButtonBorderWidth_OnClicked"></Button>
+        <Button Grid.Row="17" IsEnabled="False" Text="Change Text Size" Clicked="ChangeTextSize_OnClicked"></Button>
+        <Button Grid.Row="18" IsEnabled="False" Text="Change Font Family" Clicked="ChangeFontFamily_OnClicked"></Button>
+        </Grid>
 </ContentView>

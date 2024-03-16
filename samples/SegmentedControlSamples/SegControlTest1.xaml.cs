@@ -48,12 +48,27 @@ public partial class SegControlTest1 : ContentView
 
     private void ButtonTintColor_OnClicked(object sender, EventArgs e)
     {
-        SegmentedControl.TintColor = Colors.Aqua;
+        if (SegmentedControl.SelectedTextColor != Colors.Aqua)
+        {
+            SegmentedControl.TintColor = Colors.Aqua;
+        }
+        else
+        {
+            SegmentedControl.TintColor = Colors.BlueViolet;
+        }
     }
 
     private void ButtonSelectedTextColor_OnClicked(object sender, EventArgs e)
     {
-        SegmentedControl.SelectedTextColor = Colors.Green;
+        if(SegmentedControl.SelectedTextColor != Colors.Red)
+        {
+            SegmentedControl.SelectedTextColor = Colors.Red;
+        }
+        else
+        {
+            SegmentedControl.SelectedTextColor = Colors.Green;
+        }
+
     }
 
     private void ButtonBorderColor_OnClicked(object sender, EventArgs e)
@@ -180,7 +195,7 @@ public partial class SegControlTest1 : ContentView
         if (!_isTextColorChanged)
         {
             _defaultTextColor = SegmentedControl.TextColor;
-            SegmentedControl.TextColor = Colors.Chocolate;
+            SegmentedControl.TextColor = Colors.Red;
             _isTextColorChanged = true;
         }
         else

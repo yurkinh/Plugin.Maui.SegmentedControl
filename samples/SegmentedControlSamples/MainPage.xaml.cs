@@ -16,20 +16,17 @@ public partial class MainPage : ContentPage
         switch (e.NewValue)
         {
             case 0:
-                SegContent.Children.Clear();
-                SegContent.Children.Add(new SegControlTest1());
+                SegContent.Content = new SegControlTest1();
+                (SegContent as IView).InvalidateMeasure();
                 break;
             case 1:
-                SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "TEST 2 tab selected" });
+                SegContent.Content = new Label() { Text = "TEST 2 tab selected" };
                 break;
             case 2:
-                SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "TEST 3 tab selected" });
+                SegContent.Content = new Label() { Text = "TEST 3 tab selected" };
                 break;
             case 3:
-                SegContent.Children.Clear();
-                SegContent.Children.Add(new Label() { Text = "TEST 4  tab selected" });
+                SegContent.Content = new Label() { Text = "TEST 4 tab selected" };
                 break;
         }
     }    

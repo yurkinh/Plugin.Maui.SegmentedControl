@@ -2,6 +2,7 @@
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.Locations;
+using Android.Net.Rtp;
 using Android.Net.Wifi;
 using Android.Views;
 using Android.Widget;
@@ -330,8 +331,61 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
     static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
     {
-        //redraw everything
-        OnPropertyChanged(handler, control);
+        //entire Children property has been changed -- woo hoo we essentialy have to
+        //re-create all the segments now
+
+        if (handler.PlatformView != null && control != null)
+        {
+            //first, remove old children
+            var radioGroup = handler.PlatformView;
+            int count = radioGroup.ChildCount;
+            if (count > 0)
+            {
+                for (int i = count - 1; i >= 0; i--)
+                {
+                    var o = radioGroup.GetChildAt(i);
+                    if (o is RadioButton)
+                    {
+                        radioGroup.RemoveViewAt(i);
+                    }
+                }
+
+                //next, add new children
+                var layoutInflater = LayoutInflater.From(handler.Context);
+
+                var vv = handler.VirtualView;
+                for (var i = 0; i < vv.Children.Count; i++)
+                {
+                    var o = vv.Children[i];
+                    var isButtonEnabled = vv.IsEnabled && o.IsEnabled;
+                    var rb = (RadioButton)layoutInflater.Inflate(
+                        Resource.Layout.RadioButton, null);
+
+                    rb.LayoutParameters = new RadioGroup.LayoutParams(
+                        LayoutParams.MatchParent, LayoutParams.WrapContent, 1f);
+                    rb.Text = o.Text;
+
+                    if (i == 0)
+                    {
+                        rb.SetBackgroundResource(Resource.Drawable.segmented_control_first_background);
+                    }
+                    else if (i == vv.Children.Count - 1)
+                    {
+                        rb.SetBackgroundResource(Resource.Drawable.segmented_control_last_background);
+                    }
+
+                    handler.ConfigureRadioButton(i, isButtonEnabled, rb);
+                    radioGroup.AddView(rb);
+                }
+                var option = (RadioButton)radioGroup.GetChildAt(vv.SelectedSegment);
+                if (option != null)
+                    option.Checked = true;
+            }
+
+
+
+
+        }
     }
 
     static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)

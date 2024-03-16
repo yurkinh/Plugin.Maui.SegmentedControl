@@ -5,8 +5,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
 
-    <VerticalStackLayout x:Name="segContainer" HorizontalOptions="Fill">
+    <Grid x:Name="segContainer" 
+                         HorizontalOptions="Fill" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <controls:SegmentedControl
+            Grid.Row="0"
             x:Name="SegControl"
             HorizontalOptions="Fill"
             SelectedTextColor="White"
@@ -20,8 +26,9 @@
                 <controls:SegmentedControlOption Text="Test 4" />
             </controls:SegmentedControl.Children>
         </controls:SegmentedControl>
-        <StackLayout x:Name="SegContent" />
-    </VerticalStackLayout>
+        <ScrollView VerticalOptions="StartAndExpand" x:Name="SegContent" Grid.Row="1" >
+        </ScrollView>
+    </Grid>
 
 </ContentPage>
 

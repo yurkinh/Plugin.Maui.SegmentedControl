@@ -25,8 +25,12 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
 
     public static readonly BindableProperty ChildrenProperty
         = BindableProperty.Create(
-            nameof(Children), typeof(IList<SegmentedControlOption>),
-            typeof(SegmentedControl), default(IList<SegmentedControlOption>),
+            nameof(Children), 
+            typeof(IList<SegmentedControlOption>),
+            typeof(SegmentedControl), 
+            default(IList<SegmentedControlOption>),
+            BindingMode.OneWay,
+             
             propertyChanging: OnChildrenChanging);
     private static void OnChildrenChanging(
         BindableObject bindable, object oldValue, object newValue)
@@ -36,18 +40,18 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
             && segmentedControl.Children != null)
         {
             segmentedControl.OnElementChildrenChanging?.Invoke(segmentedControl, new ElementChildrenChanging((IList<SegmentedControlOption>)oldValue, newItemsList));
-            segmentedControl.Children.Clear();
 
             foreach (var newSegment in newItemsList)
             {
                 newSegment.BindingContext = segmentedControl.BindingContext;
                 //works for programmatically setting Children
                 newSegment.SetParent(segmentedControl);
-                segmentedControl.Children.Add(newSegment);
             }
+            segmentedControl.Children = newItemsList;
         }
         
     }
+
     public IList<SegmentedControlOption> Children
     {
         get => (IList<SegmentedControlOption>)GetValue(ChildrenProperty);

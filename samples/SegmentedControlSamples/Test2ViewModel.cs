@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace SegmentedControlSamples
 {
-    public class Test1ViewModel : INotifyPropertyChanged
+    public class Test2ViewModel : INotifyPropertyChanged
     {
         private readonly SegmentedControlOption[] _list1 = {
             new SegmentedControlOption{Text="Test0A"},
@@ -29,7 +29,7 @@ namespace SegmentedControlSamples
 
         readonly string[] _stringSet2 = { "Test1D", "Test2D", "Test3D", "Test4D" };
 
-        public Test1ViewModel()
+        public Test2ViewModel()
         {
             ChoiceText = "Start";
             ChangeText = "CHANGETEXT";
