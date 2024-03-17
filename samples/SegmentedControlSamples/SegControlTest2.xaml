@@ -49,7 +49,7 @@
                                 DisabledTextColor="LightGray"
                                 SelectedSegment="{Binding SelectedSegment}"
                                 ValueChanged="SegmentedControl_ValueChanged"
-                                
+                                GroupToggleBehavior="None"
                                 >
 
             <ctrl:SegmentedControl.Behaviors>

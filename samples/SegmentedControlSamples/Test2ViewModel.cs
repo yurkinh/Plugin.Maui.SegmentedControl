@@ -53,6 +53,7 @@ namespace SegmentedControlSamples
             PlayButtonText = "Play";
             ForwardButtonEnabled = true;
             ForwardButtonText = "Forward";
+            SelectedSegment = -1;
         }
 
         private void OnTimer(object s)

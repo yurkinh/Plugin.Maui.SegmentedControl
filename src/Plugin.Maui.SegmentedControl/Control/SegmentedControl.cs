@@ -130,6 +130,27 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         }
     }
 
+    public static readonly BindableProperty GroupToggleBehaviorProperty 
+        = BindableProperty.Create(
+            nameof(GroupToggleBehavior), 
+            typeof(GroupToggleBehavior),
+            typeof(SegmentedControl), 
+            GroupToggleBehavior.Radio);
+
+    public GroupToggleBehavior GroupToggleBehavior
+    {
+        get
+        {
+            return (GroupToggleBehavior)GetValue(GroupToggleBehaviorProperty);
+        }
+        set
+        {
+            SetValue(GroupToggleBehaviorProperty, value);
+        }
+    }
+
+
+
     public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
     [EditorBrowsable(EditorBrowsableState.Never)]

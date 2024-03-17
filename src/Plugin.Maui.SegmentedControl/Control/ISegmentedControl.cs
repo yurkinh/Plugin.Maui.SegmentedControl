@@ -1,4 +1,6 @@
-﻿namespace Plugin.Maui.SegmentedControl;
+﻿using Plugin.Maui.SegmentedControl.Control;
+
+namespace Plugin.Maui.SegmentedControl;
 
 public interface ISegmentedControl: IView
 {
@@ -34,6 +36,8 @@ public interface ISegmentedControl: IView
     public Color DisabledTintColor { get; set; }
 
     public int SelectedSegment { get; set; }
+
+    public GroupToggleBehavior GroupToggleBehavior { get; set; }
 }
 
 public interface ISegmentedControlOption : IView
