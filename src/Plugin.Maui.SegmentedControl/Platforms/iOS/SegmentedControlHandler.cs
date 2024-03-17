@@ -13,7 +13,8 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         [nameof(SegmentedControl.SelectedSegment)] = MapSelectedSegment,
         [nameof(SegmentedControl.TintColor)] = MapTintColor,
         [nameof(SegmentedControl.SelectedTextColor)] = MapSelectedTextColor,
-        [nameof(SegmentedControl.TextColor)] = MapTextColor
+        [nameof(SegmentedControl.TextColor)] = MapTextColor,
+        [nameof(SegmentedControl.Children)] = MapChildren
     };    
 
     public SegmentedControlHandler() : base(Mapper)
@@ -32,8 +33,15 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
             segmentControl.InsertSegment(VirtualView.Children[i].Text, i, false);
         }
 
+        for (var i = 0; i < VirtualView.Children.Count; i++)
+        {
+            var child = VirtualView.Children[i];
+            segmentControl.SetEnabled(child.IsEnabled && VirtualView.IsEnabled, i);
+        }
+
+
         segmentControl.Enabled = VirtualView.IsEnabled;
-        segmentControl.TintColor = VirtualView.IsEnabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledColor.ToPlatform();
+        segmentControl.TintColor = VirtualView.IsEnabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledTintColor.ToPlatform();
         segmentControl.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = VirtualView.SelectedTextColor.ToPlatform() }, UIControlState.Selected);
         segmentControl.SelectedSegment = VirtualView.SelectedSegment;
         return segmentControl;
@@ -57,9 +65,28 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         VirtualView.SelectedSegment = (int)PlatformView.SelectedSegment;
     }
 
+    static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        UISegmentedControl segmentControl = handler.PlatformView;
+        segmentControl.RemoveAllSegments();
+        for (var i = 0; i < handler.VirtualView.Children.Count; i++)
+        {
+            segmentControl.InsertSegment(handler.VirtualView.Children[i].Text, i, false);
+        }
+
+        for (var i = 0; i < handler.VirtualView.Children.Count; i++)
+        {
+            var child = handler.VirtualView.Children[i];
+            segmentControl.SetEnabled(child.IsEnabled, i);
+        }
+        segmentControl.SelectedSegment = handler.VirtualView.SelectedSegment;
+    }
+
     static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.SelectedSegmentTintColor = control.IsEnabled ? control.TintColor.ToPlatform() : control.DisabledColor.ToPlatform();
+        handler.PlatformView.SelectedSegmentTintColor = control.IsEnabled 
+            ? control.TintColor.ToPlatform() 
+            : control.DisabledTintColor.ToPlatform();
     }
 
     static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
@@ -71,7 +98,9 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
     static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control)
     {
         handler.PlatformView.Enabled = control.IsEnabled;
-        handler.PlatformView.TintColor = control.IsEnabled ? control.TintColor.ToPlatform() : control.DisabledColor.ToPlatform();
+        handler.PlatformView.TintColor = control.IsEnabled 
+            ? control.TintColor.ToPlatform() 
+            : control.DisabledTintColor.ToPlatform();
     }
 
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
