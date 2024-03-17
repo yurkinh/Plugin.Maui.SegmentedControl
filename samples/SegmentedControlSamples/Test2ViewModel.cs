@@ -9,64 +9,103 @@ using System.Windows.Input;
 
 namespace SegmentedControlSamples
 {
+    public enum PlayerStatus
+    {
+        Stopped = 0,
+        Playing = 1,
+    }
+
     public class Test2ViewModel : INotifyPropertyChanged
     {
-        private readonly SegmentedControlOption[] _list1 = {
-            new SegmentedControlOption{Text="Test0A"},
-            new SegmentedControlOption{Text="Test1A"},
-            new SegmentedControlOption{Text="Test2A"}
+        public List<string> _playList = new List<string>
+        {
+            "Song One",
+            "Song Two",
+            "Song Three",
+            "Song Four",
         };
 
-        internal SegmentedControlOption[] List2 = {
-            new SegmentedControlOption{Text="Item1B"},
-            new SegmentedControlOption{Text="Item2B"},
-            new SegmentedControlOption{Text="Item3B"},
-            new SegmentedControlOption{Text="Item4B"},
-            new SegmentedControlOption{Text="Item5B"}
-        };
+        Timer _timer;
+        int _curSongSecond;
+        public ICommand SegmentTappedCommand { get; }
 
-        readonly string[] _stringSet1 = { "Test1C", "Test2C", "Test3C" };
 
-        readonly string[] _stringSet2 = { "Test1D", "Test2D", "Test3D", "Test4D" };
 
         public Test2ViewModel()
         {
-            ChoiceText = "Start";
-            ChangeText = "CHANGETEXT";
-            SegmentItemsSource = new List<SegmentedControlOption>();// (_list1);
-            ChangeItemsSourceCommand = new Command(OnChangeItemsSource);
-            SegmentStringSource = new List<string>(_stringSet1);
-            SegmentChangedCommand = new Command(OnSegmentChanged);
+            _timer = new Timer(OnTimer);
+
+            SegmentTappedCommand = new Command<SegmentTappedEventArgs>((a) =>
+            {
+                if (a.Index == 1)
+                {
+                    if (PlayerStatus == PlayerStatus.Playing)
+                    {
+                        PlayerStatus = PlayerStatus.Stopped;
+                    }
+                    else
+                    {
+                        PlayerStatus = PlayerStatus.Playing;
+                    }
+                }
+            });
+            PlayerStatus = PlayerStatus.Stopped;
+            PlayButtonText = "Play";
+            ForwardButtonEnabled = true;
+            ForwardButtonText = "Forward";
         }
 
-        int changedCount;
-        private void OnSegmentChanged(object obj)
+        private void OnTimer(object s)
         {
-            changedCount++;
+
         }
 
-        private void OnChangeItemsSource(object obj)
+
+        private PlayerStatus _playerStatus;
+        private PlayerStatus PlayerStatus
         {
-            //SegmentItemsSource[0].RemoveBinding(SegmentedControlOption.TextProperty);
-            //SegmentItemsSource = SegmentItemsSource.Count == list1.Length ? new List<SegmentedControlOption>(list2) : new List<SegmentedControlOption>(list1);
-            //SegmentItemsSource[0].SetBinding(SegmentedControlOption.TextProperty, nameof(ChangeText));
-            SegmentStringSource = SegmentStringSource.Count == _stringSet1.Length ? new List<string>(_stringSet2) : new List<string>(_stringSet1);
+            get { return _playerStatus; }
+            set 
+            { 
+                _playerStatus = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayerStatusText)));
+                PlayButtonText = _playerStatus == PlayerStatus.Playing ? "STOP" : "Play";
+            }
         }
 
-        //private double _changeFontsize;
-
-        //public double ChangeFontSize
-        //{
-        //    get => _changeFontsize;
-        //    set { _changeFontsize = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ChangeFontSize))); }
-        //}
-
-        private string _changeText;
-        public string ChangeText
+        public string PlayerStatusText
         {
-            get => _changeText;
-            set { _changeText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ChangeText))); }
+            get { return this.PlayerStatus.ToString(); }
         }
+
+        private string _playButtonText;
+        public string PlayButtonText
+        {
+            get => _playButtonText;
+            set { _playButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayButtonText))); }
+        }
+
+        private bool _backButtonEnabled = true;
+        public bool BackButtonEnabled
+        {
+            get => _backButtonEnabled;
+            set { _backButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(BackButtonEnabled))); }
+        }
+
+        private bool _forwardButtonEnabled = true;
+        public bool ForwardButtonEnabled
+        {
+            get => _forwardButtonEnabled;
+            set { _forwardButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonEnabled))); }
+        }
+
+        private string _forwardButtonText;
+        public string ForwardButtonText
+        {
+            get => _forwardButtonText;
+            set { _forwardButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonText))); }
+        }
+
 
         private int _selectedSegment;
         public int SelectedSegment
@@ -76,7 +115,6 @@ namespace SegmentedControlSamples
             {
                 _selectedSegment = value;
                 OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedSegment)));
-                ChoiceText = value.ToString();
             }
         }
         private IList<SegmentedControlOption> _segmentItemsSource;
@@ -86,23 +124,6 @@ namespace SegmentedControlSamples
             set { _segmentItemsSource = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(SegmentItemsSource))); }
         }
 
-        private IList<string> _segmentStringSource;
-        public IList<string> SegmentStringSource
-        {
-            get => _segmentStringSource;
-            set { _segmentStringSource = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(SegmentStringSource))); }
-        }
-
-        private string _choiceText;
-        public string ChoiceText
-        {
-            get => _choiceText;
-            set { _choiceText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ChoiceText))); }
-        }
-
-        public ICommand ChangeItemsSourceCommand { get; }
-
-        public ICommand SegmentChangedCommand { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)

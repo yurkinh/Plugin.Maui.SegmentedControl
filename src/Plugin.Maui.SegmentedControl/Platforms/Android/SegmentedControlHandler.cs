@@ -236,6 +236,18 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
         SetTintColor(rb, tintColor);
 
+        rb.Tag = i;
+        rb.Click += RadioButton_Click;
+
+    }
+
+    private void RadioButton_Click(object sender, EventArgs e)
+    {
+        if(sender is RadioButton rb)
+        {
+            var t = (int)rb.Tag;
+            VirtualView.SendSegmentTapped(t);
+        }
     }
 
     private Android.Graphics.Color GetTintColor(bool selected, bool enabled)

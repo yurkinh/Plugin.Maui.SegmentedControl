@@ -20,7 +20,8 @@ public partial class MainPage : ContentPage
                 (SegContent as IView).InvalidateMeasure();
                 break;
             case 1:
-                SegContent.Content = new Label() { Text = "TEST 2 tab selected" };
+                SegContent.Content = new SegControlTest2();
+                (SegContent as IView).InvalidateMeasure();
                 break;
             case 2:
                 SegContent.Content = new Label() { Text = "TEST 3 tab selected" };

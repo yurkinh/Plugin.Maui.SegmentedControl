@@ -2,11 +2,72 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewModel="clr-namespace:SegmentedControlSamples"
+             x:DataType="viewModel:Test2ViewModel"
              x:Class="SegmentedControlSamples.SegControlTest2">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid  x:Name="SegmentWithStack" 
+                              HorizontalOptions="CenterAndExpand"
+                              VerticalOptions="StartAndExpand"
+              
+            Padding="5"
+            RowSpacing="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Text="Segmented Control as a player control, bound" />
+        <ctrl:SegmentedControl  Grid.Row="1"
+                x:Name="SegmentedControl" HorizontalOptions="FillAndExpand" 
+                                BackgroundColor="#FF808080"
+                                TintColor="#FF606060"
+                                SelectedTextColor="White"
+                                DisabledTintColor="DarkGray"
+                                TextColor="#FFE0E0E0"
+                                DisabledTextColor="LightGray"
+                                SelectedSegment="{Binding SelectedSegment}"
+                                ValueChanged="SegmentedControl_ValueChanged"
+                                
+                                >
+
+            <ctrl:SegmentedControl.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    x:TypeArguments="ctrl:SegmentTappedEventArgs"
+                EventName="SegmentTapped"
+                Command="{Binding SegmentTappedCommand}" />
+            </ctrl:SegmentedControl.Behaviors>
+            <ctrl:SegmentedControl.Children>
+                <ctrl:SegmentedControlOption Text="Back" IsEnabled="{Binding BackButtonEnabled}" />
+                <ctrl:SegmentedControlOption Text="{Binding PlayButtonText}" />
+                <ctrl:SegmentedControlOption 
+                    Text="{Binding ForwardButtonText}" IsEnabled="{Binding ForwardButtonEnabled}" />
+            </ctrl:SegmentedControl.Children>
+        </ctrl:SegmentedControl>
+
+        <Label Grid.Row="2" Text="Binding PlayerTimerText" />
+        <Label Grid.Row="3" Text="{Binding PlayerStatusText}" />
+        <Label Grid.Row="4" x:Name="segmentIndexLabel"  />
+    </Grid>
 </ContentView>

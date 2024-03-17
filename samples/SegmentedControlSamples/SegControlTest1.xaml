@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
              x:Class="SegmentedControlSamples.SegControlTest1">
-        <Grid  x:Name="SegmentWithStack" 
+    <Grid  x:Name="SegmentWithStack" 
                               HorizontalOptions="CenterAndExpand"
                               VerticalOptions="StartAndExpand"
               
@@ -38,7 +38,7 @@
         <Label Grid.Row="0" Text="Segmented Control defaults, set up from code" />
         <ctrl:SegmentedControl  Grid.Row="1"
                 x:Name="SegmentedControl" HorizontalOptions="FillAndExpand" >
-            </ctrl:SegmentedControl>
+        </ctrl:SegmentedControl>
 
         <Button Grid.Row="2" Text="Text Color" Clicked="Button_TextColor"/>
         <Button Grid.Row="3" Text="Change First Item Text" Clicked="ChangeFirstText"/>
@@ -57,5 +57,5 @@
         <Button Grid.Row="16" IsEnabled="False" Text="Change Border Width" Clicked="ButtonBorderWidth_OnClicked"></Button>
         <Button Grid.Row="17" IsEnabled="False" Text="Change Text Size" Clicked="ChangeTextSize_OnClicked"></Button>
         <Button Grid.Row="18" IsEnabled="False" Text="Change Font Family" Clicked="ChangeFontFamily_OnClicked"></Button>
-        </Grid>
+    </Grid>
 </ContentView>

@@ -138,6 +138,21 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         ValueChanged?.Invoke(this, new ValueChangedEventArgs { NewValue = this.SelectedSegment });
     }
 
+    public event EventHandler<SegmentTappedEventArgs> SegmentTapped;
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void SendSegmentTapped(int segment)
+    {
+        if (IsEnabled
+            && segment >= 0
+            && segment < Children.Count
+            && Children[segment].IsEnabled)
+        {
+            SegmentTapped?.Invoke(this, new SegmentTappedEventArgs { Index = segment });
+        }
+    }
+
+
     protected override void OnBindingContextChanged()
     {
         base.OnBindingContextChanged();
