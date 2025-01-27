@@ -16,7 +16,7 @@
 		<Authors>yurkinh</Authors>
 		<Copyright>Copyright © yurkinh and contributors</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageVersion>1.0.9</PackageVersion>
+		<PackageVersion>1.1.0</PackageVersion>
 		<IsPackable>True</IsPackable>
 		<PackageProjectUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</RepositoryUrl>
@@ -32,7 +32,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<DebugType>portable</DebugType>
 		<PackageIcon>nuget.png</PackageIcon>
-		<PackageReleaseNotes>Fixed crash on Android when SelectedSegmented="-1" (deselected)</PackageReleaseNotes>
+		<PackageReleaseNotes>Updated to .net 9</PackageReleaseNotes>
 	</PropertyGroup>
 
 
@@ -75,6 +75,7 @@
 	  <AndroidResource Include="Platforms\Android\Resources\values\colors.xml" />
 	</ItemGroup>
 	<ItemGroup>
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.14" />
 	  <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	    <PrivateAssets>all</PrivateAssets>
