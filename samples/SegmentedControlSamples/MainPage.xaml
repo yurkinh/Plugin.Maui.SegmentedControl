@@ -2,10 +2,13 @@
 <ContentPage
     x:Class="SegmentedControlSamples.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:local="clr-namespace:SegmentedControlSamples"
+    x:DataType="local:MainPage"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
 
-    <VerticalStackLayout x:Name="segContainer" HorizontalOptions="Fill">
+    <VerticalStackLayout x:Name="segContainer"
+                         HorizontalOptions="Fill">
         <controls:SegmentedControl
             x:Name="SegControl"
             HorizontalOptions="Fill"
@@ -15,13 +18,13 @@
             ValueChanged="Handle_ValueChanged"
             WidthRequest="{OnPlatform Android=350}">
             <controls:SegmentedControl.Children>
-                <controls:SegmentedControlOption Text="Tab1" />
-                <controls:SegmentedControlOption Text="Tab2" />
-                <controls:SegmentedControlOption Text="Tab3" />
-                <controls:SegmentedControlOption Text="Attachments" />
+                <controls:SegmentedControlOption Text="Tab1"/>
+                <controls:SegmentedControlOption Text="Tab2"/>
+                <controls:SegmentedControlOption Text="Tab3"/>
+                <controls:SegmentedControlOption Text="Attachments"/>
             </controls:SegmentedControl.Children>
         </controls:SegmentedControl>
-        <StackLayout x:Name="SegContent" />
+        <StackLayout x:Name="SegContent"/>
     </VerticalStackLayout>
 
 </ContentPage>
