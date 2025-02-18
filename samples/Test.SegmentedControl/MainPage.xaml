@@ -9,7 +9,7 @@
     <ScrollView>
         <VerticalStackLayout
             x:Name="SegmentWithStack"
-            HorizontalOptions="CenterAndExpand"
+            HorizontalOptions="Center"
             BackgroundColor="Green"
             Padding="20"
             Spacing="25">
@@ -17,7 +17,7 @@
             <ctrl:SegmentedControl
                 BackgroundColor="BurlyWood"
                 x:Name="SegmentedControl"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 SelectedSegment="{Binding SelectedSegment, Mode=TwoWay}"
                 TintColor="Red"
                 SelectedTextColor="Yellow"
