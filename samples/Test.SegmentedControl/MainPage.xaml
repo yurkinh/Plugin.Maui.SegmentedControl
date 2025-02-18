@@ -7,45 +7,50 @@
              x:Class="Test.SegmentedControl.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout  x:Name="SegmentWithStack" 
-                              HorizontalOptions="CenterAndExpand"
-                              BackgroundColor="Green"
+        <VerticalStackLayout
+            x:Name="SegmentWithStack"
+            HorizontalOptions="CenterAndExpand"
+            BackgroundColor="Green"
             Padding="20"
             Spacing="25">
 
-                <ctrl:SegmentedControl                 BackgroundColor="BurlyWood"
-                x:Name="SegmentedControl" HorizontalOptions="FillAndExpand"
+            <ctrl:SegmentedControl
+                BackgroundColor="BurlyWood"
+                x:Name="SegmentedControl"
+                HorizontalOptions="FillAndExpand"
                 SelectedSegment="{Binding SelectedSegment, Mode=TwoWay}"
                 TintColor="Red"
                 SelectedTextColor="Yellow"
                 DisabledTintColor="LightGray"
-
                 TextColor="Blue"
                 DisabledTextColor="Gray"
                 DisabledBackgroundColor="Black"
-                
-                Margin="8,8,8,8"
-                >
+                Margin="8,8,8,8">
 
                 <ctrl:SegmentedControl.Children>
-                    <ctrl:SegmentedControlOption Text="{Binding ChangeText}" />
-                    <ctrl:SegmentedControlOption Text="BA" />
-                    <ctrl:SegmentedControlOption Text="CA" />
+                    <ctrl:SegmentedControlOption Text="{Binding ChangeText}"/>
+                    <ctrl:SegmentedControlOption Text="BA"/>
+                    <ctrl:SegmentedControlOption Text="CA"/>
                 </ctrl:SegmentedControl.Children>
-                
+
             </ctrl:SegmentedControl>
             <!-- FontFamily="{StaticResource PlatformFontName}"
                 SegmentSelectedCommand="{Binding SegmentChangedCommand}"
                 OnElementChildrenChanging="OnElementChildrenChanging"
             -->
-            
-            <Label x:Name="ChoiceLabel" Text="{Binding ChoiceText}"></Label>
+
+            <Label x:Name="ChoiceLabel"
+                   Text="{Binding ChoiceText}"></Label>
             <ScrollView>
                 <StackLayout Margin="24, 24, 24, 24">
-                    <Button Text="Change First Item Text" Clicked="ChangeFirstText"/>
-                    <Button Text="Disable First Segment" Clicked="DisableFirstSegment_OnClicked"></Button>
-                    <Button Text="Enable First Segment" Clicked="EnableFirstSegment_OnClicked"></Button>
-                    <Button Text="Select Segment 3" Clicked="SelectSegment3"></Button>
+                    <Button Text="Change First Item Text"
+                            Clicked="ChangeFirstText"/>
+                    <Button Text="Disable First Segment"
+                            Clicked="DisableFirstSegment_OnClicked"></Button>
+                    <Button Text="Enable First Segment"
+                            Clicked="EnableFirstSegment_OnClicked"></Button>
+                    <Button Text="Select Segment 3"
+                            Clicked="SelectSegment3"></Button>
                     <!--<Button Text="Remove" Clicked="Button_OnClicked"></Button>-->
                     <!--<Button Text="Tint Color Change Button" Clicked="ButtonTintColor_OnClicked"></Button>
                     <Button Text="Selected Text Change Button" Clicked="ButtonSelectedTextColor_OnClicked"></Button>
@@ -60,7 +65,8 @@
                     <Button Text="Change Font Family" Clicked="ChangeFontFamily_OnClicked"></Button>-->
                     <!--<Button Text="Go to Second Page" Clicked="SecondPage_OnClicked"/>
                     <Button Text="Go to Third Page" Clicked="ThirdPage_OnClicked"/>-->
-                    <Button Text="Text Color" Clicked="Button_TextColor"/>
+                    <Button Text="Text Color"
+                            Clicked="Button_TextColor"/>
                 </StackLayout>
             </ScrollView>
         </VerticalStackLayout>
