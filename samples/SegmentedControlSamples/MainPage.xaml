@@ -7,16 +7,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
 
-    <VerticalStackLayout x:Name="segContainer"
-                         HorizontalOptions="Fill">
+    <Grid x:Name="segContainer" 
+                         HorizontalOptions="Fill" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <controls:SegmentedControl
+            Grid.Row="0"
             x:Name="SegControl"
             HorizontalOptions="Fill"
             SelectedTextColor="White"
             TextColor="Black"
             TintColor="Red"
-            ValueChanged="Handle_ValueChanged"
-            WidthRequest="{OnPlatform Android=350}">
+            ValueChanged="Handle_ValueChanged">
             <controls:SegmentedControl.Children>
                 <controls:SegmentedControlOption Text="Tab1"/>
                 <controls:SegmentedControlOption Text="Tab2"/>
@@ -24,8 +28,9 @@
                 <controls:SegmentedControlOption Text="Attachments"/>
             </controls:SegmentedControl.Children>
         </controls:SegmentedControl>
-        <StackLayout x:Name="SegContent"/>
-    </VerticalStackLayout>
+        <ScrollView VerticalOptions="Start" x:Name="SegContent" Grid.Row="1" >
+        </ScrollView>
+    </Grid>
 
 </ContentPage>
 

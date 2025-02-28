@@ -55,11 +55,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="11.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.14" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Plugin.Maui.SegmentedControl\Plugin.Maui.SegmentedControl.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="SegControlTest1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="SegControlTest2.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 </Project>

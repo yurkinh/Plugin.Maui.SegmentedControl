@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+             xmlns:ctrl1="clr-namespace:Test.SegmentedControl;assembly=Test.SegmentedControl"
+             x:DataType="ctrl1:MainViewModel"
+             x:Class="Test.SegmentedControl.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            x:Name="SegmentWithStack"
+            HorizontalOptions="Center"
+            BackgroundColor="Green"
+            Padding="20"
+            Spacing="25">
+
+            <ctrl:SegmentedControl
+                BackgroundColor="BurlyWood"
+                x:Name="SegmentedControl"
+                HorizontalOptions="Fill"
+                SelectedSegment="{Binding SelectedSegment, Mode=TwoWay}"
+                TintColor="Red"
+                SelectedTextColor="Yellow"
+                DisabledTintColor="LightGray"
+                TextColor="Blue"
+                DisabledTextColor="Gray"
+                DisabledBackgroundColor="Black"
+                Margin="8,8,8,8">
+
+                <ctrl:SegmentedControl.Children>
+                    <ctrl:SegmentedControlOption Text="{Binding ChangeText}"/>
+                    <ctrl:SegmentedControlOption Text="BA"/>
+                    <ctrl:SegmentedControlOption Text="CA"/>
+                </ctrl:SegmentedControl.Children>
+
+            </ctrl:SegmentedControl>
+            <!-- FontFamily="{StaticResource PlatformFontName}"
+                SegmentSelectedCommand="{Binding SegmentChangedCommand}"
+                OnElementChildrenChanging="OnElementChildrenChanging"
+            -->
+
+            <Label x:Name="ChoiceLabel"
+                   Text="{Binding ChoiceText}"></Label>
+            <ScrollView>
+                <StackLayout Margin="24, 24, 24, 24">
+                    <Button Text="Change First Item Text"
+                            Clicked="ChangeFirstText"/>
+                    <Button Text="Disable First Segment"
+                            Clicked="DisableFirstSegment_OnClicked"></Button>
+                    <Button Text="Enable First Segment"
+                            Clicked="EnableFirstSegment_OnClicked"></Button>
+                    <Button Text="Select Segment 3"
+                            Clicked="SelectSegment3"></Button>
+                    <!--<Button Text="Remove" Clicked="Button_OnClicked"></Button>-->
+                    <!--<Button Text="Tint Color Change Button" Clicked="ButtonTintColor_OnClicked"></Button>
+                    <Button Text="Selected Text Change Button" Clicked="ButtonSelectedTextColor_OnClicked"></Button>
+                    <Button Text="Change Border Color" Clicked="ButtonBorderColor_OnClicked"></Button>
+                    <Button Text="Change Border Width" Clicked="ButtonBorderWidth_OnClicked"></Button>
+                    <Button Text="Disable Segment Control" Clicked="Disable_OnClicked"></Button>
+                    <Button Text="Background Color Change Button" Clicked="ButtonBackgroundColor_OnClicked"></Button>
+                    <Button Text="Enable Segment Control" Clicked="Enable_OnClicked"></Button>
+                    <Button Text="Change Disabled Color" Clicked="ChangeDisabledColor_OnClicked"></Button>
+                    <Button Text="Change ItemsSource" Command="{Binding ChangeItemsSourceCommand}"></Button>
+                    <Button Text="Change Text Size" Clicked="ChangeTextSize_OnClicked"></Button>
+                    <Button Text="Change Font Family" Clicked="ChangeFontFamily_OnClicked"></Button>-->
+                    <!--<Button Text="Go to Second Page" Clicked="SecondPage_OnClicked"/>
+                    <Button Text="Go to Third Page" Clicked="ThirdPage_OnClicked"/>-->
+                    <Button Text="Text Color"
+                            Clicked="Button_TextColor"/>
+                </StackLayout>
+            </ScrollView>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

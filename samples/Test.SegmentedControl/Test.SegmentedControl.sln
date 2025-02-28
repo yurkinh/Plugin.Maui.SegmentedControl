@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1706.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SegmentedControl", "Test.SegmentedControl.csproj", "{D9F807D2-1EC2-4B01-A359-D4358DBACDA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Maui.SegmentedControl", "..\..\src\Plugin.Maui.SegmentedControl\Plugin.Maui.SegmentedControl.csproj", "{DC6F9F63-6ED9-4EB1-AE24-E5008C7F9721}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9F807D2-1EC2-4B01-A359-D4358DBACDA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9F807D2-1EC2-4B01-A359-D4358DBACDA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F807D2-1EC2-4B01-A359-D4358DBACDA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9F807D2-1EC2-4B01-A359-D4358DBACDA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6F9F63-6ED9-4EB1-AE24-E5008C7F9721}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6F9F63-6ED9-4EB1-AE24-E5008C7F9721}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6F9F63-6ED9-4EB1-AE24-E5008C7F9721}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6F9F63-6ED9-4EB1-AE24-E5008C7F9721}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36835921-6C7A-4E43-AB39-A1A8D13598C3}
+	EndGlobalSection
+EndGlobal
