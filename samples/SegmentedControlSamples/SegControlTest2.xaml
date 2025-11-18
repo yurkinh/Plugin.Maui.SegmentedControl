@@ -7,11 +7,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewModel="clr-namespace:SegmentedControlSamples"
     x:DataType="viewModel:Test2ViewModel">
-    <Grid  x:Name="SegmentWithStack" 
-                              HorizontalOptions="CenterAndExpand"
-                              VerticalOptions="StartAndExpand"
-              
-            Padding="5"
+    <Grid  x:Name="SegmentWithStack"
+           Padding="5"
             RowSpacing="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -41,7 +38,8 @@
 
         <Label Grid.Row="0" Text="Segmented Control as a player control, bound" />
         <ctrl:SegmentedControl  Grid.Row="1"
-                x:Name="SegmentedControl" HorizontalOptions="FillAndExpand" 
+                                x:Name="SegmentedControl"
+                HorizontalOptions="Fill"
                                 BackgroundColor="#FF808080"
                                 TintColor="#FF606060"
                                 SelectedTextColor="White"
