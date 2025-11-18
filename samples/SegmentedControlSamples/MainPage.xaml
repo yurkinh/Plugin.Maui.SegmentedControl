@@ -2,10 +2,10 @@
 <ContentPage
     x:Class="SegmentedControlSamples.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:local="clr-namespace:SegmentedControlSamples"
-    x:DataType="local:MainPage"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
+    xmlns:local="clr-namespace:SegmentedControlSamples"
+    xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+    x:DataType="local:MainPage">
 
     <Grid x:Name="segContainer" 
                          HorizontalOptions="Fill" >

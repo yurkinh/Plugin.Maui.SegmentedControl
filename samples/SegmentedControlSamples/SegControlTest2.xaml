@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:viewModel="clr-namespace:SegmentedControlSamples"
-             x:DataType="viewModel:Test2ViewModel"
-             x:Class="SegmentedControlSamples.SegControlTest2">
+<ContentView
+    x:Class="SegmentedControlSamples.SegControlTest2"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewModel="clr-namespace:SegmentedControlSamples"
+    x:DataType="viewModel:Test2ViewModel">
     <Grid  x:Name="SegmentWithStack" 
                               HorizontalOptions="CenterAndExpand"
                               VerticalOptions="StartAndExpand"
