@@ -1,4 +1,6 @@
-﻿using Plugin.Maui.SegmentedControl.Control;
+﻿#nullable enable
+
+using Plugin.Maui.SegmentedControl.Control;
 using System.ComponentModel;
 
 namespace Plugin.Maui.SegmentedControl;
@@ -151,7 +153,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
 
 
 
-    public event EventHandler<ValueChangedEventArgs> ValueChanged;
+    public event EventHandler<ValueChangedEventArgs>? ValueChanged;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void SendValueChanged()
@@ -159,7 +161,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         ValueChanged?.Invoke(this, new ValueChangedEventArgs { NewValue = this.SelectedSegment });
     }
 
-    public event EventHandler<SegmentTappedEventArgs> SegmentTapped;
+    public event EventHandler<SegmentTappedEventArgs>? SegmentTapped;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void SendSegmentTapped(int segment)

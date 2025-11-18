@@ -1,0 +1,10 @@
+{
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.sln",
+        "samples/SegmentedControlSamples/SegmentedControlSamples.sln",
+        "samples/Test.SegmentedControl/Test.SegmentedControl.sln",
+        "src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj",
+        "samples/SegmentedControlSamples/SegmentedControlSamples.csproj",
+        "samples/Test.SegmentedControl/Test.SegmentedControl.csproj"
+    ]
+}
