@@ -13,7 +13,9 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
         [nameof(SegmentedControl.SelectedSegment)] = MapSelectedSegment,
         [nameof(SegmentedControl.TintColor)] = MapTintColor,
         [nameof(SegmentedControl.SelectedTextColor)] = MapSelectedTextColor,
-        [nameof(SegmentedControl.TextColor)] = MapTextColor
+        [nameof(SegmentedControl.TextColor)] = MapTextColor,
+        [nameof(SegmentedControl.FontSize)] = MapFontSize,
+        [nameof(SegmentedControl.Padding)] = MapPadding,
     };
 
     public SegmentedControlHandler() : base(Mapper)
@@ -34,7 +36,28 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
 
         segmentControl.Enabled = VirtualView.IsEnabled;
         segmentControl.TintColor = VirtualView.IsEnabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledTintColor.ToPlatform();
-        segmentControl.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = VirtualView.SelectedTextColor.ToPlatform() }, UIControlState.Selected);
+        
+        // Apply text attributes with font size
+        var font = UIKit.UIFont.SystemFontOfSize((nfloat)VirtualView.FontSize);
+        segmentControl.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = VirtualView.SelectedTextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Selected);
+        segmentControl.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = VirtualView.TextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Normal);
+        
+        // Apply padding (content insets)
+        var padding = VirtualView.Padding;
+        if (OperatingSystem.IsIOSVersionAtLeast(14, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(14, 0))
+        {
+            segmentControl.Layer.MasksToBounds = false;
+            segmentControl.ContentOffset = new CoreGraphics.CGSize(padding.Left - padding.Right, padding.Top - padding.Bottom);
+        }
+        
         segmentControl.SelectedSegment = VirtualView.SelectedSegment;
         return segmentControl;
     }
@@ -78,12 +101,47 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
 
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = control.SelectedTextColor.ToPlatform() }, UIControlState.Selected);
+        var font = UIKit.UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.SelectedTextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Selected);
     }
 
     static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = control.TextColor.ToPlatform() }, UIControlState.Normal);
+        var font = UIKit.UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.TextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Normal);
+    }
+
+    static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        var font = UIKit.UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.SelectedTextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Selected);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.TextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Normal);
+    }
+
+    static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        var padding = control.Padding;
+        if (OperatingSystem.IsIOSVersionAtLeast(14, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(14, 0))
+        {
+            handler.PlatformView.Layer.MasksToBounds = false;
+            handler.PlatformView.ContentOffset = new CoreGraphics.CGSize(padding.Left - padding.Right, padding.Top - padding.Bottom);
+        }
     }
 
 }
