@@ -47,6 +47,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         var layoutInflater = LayoutInflater.From(Context);       
 
         var nativeControl = (RadioGroup)layoutInflater.Inflate(Resource.Layout.RadioGroup, null);
+        nativeControl.LayoutParameters = new ViewGroup.LayoutParams(LayoutParams.MatchParent, LayoutParams.WrapContent);
 
         for (var i = 0; i < VirtualView.Children.Count; i++)
         {
