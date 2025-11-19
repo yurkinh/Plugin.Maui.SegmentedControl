@@ -291,6 +291,9 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         SetTintColor(rb, tintColor);
 
         rb.Tag = i;
+        // Unsubscribe first to prevent duplicate event subscriptions when ConfigureRadioButton 
+        // is called on existing RadioButtons (e.g., in OnPropertyChanged)
+        rb.Click -= RadioButton_Click;
         rb.Click += RadioButton_Click;
 
     }
