@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/samples/Test.SegmentedControl/">
+    <Project Path="Test.SegmentedControl.csproj" Type="C#" />
+  </Folder>
+  <Folder Name="/src/Plugin.Maui.SegmentedControl/">
+    <Project Path="..\..\src\Plugin.Maui.SegmentedControl\Plugin.Maui.SegmentedControl.csproj" Type="C#" />
+  </Folder>
+  <Properties>
+    <Property Name="Configuration">
+      <Value>Debug</Value>
+      <Value>Release</Value>
+    </Property>
+    <Property Name="Platform">
+      <Value>Any CPU</Value>
+    </Property>
+  </Properties>
+</Solution>
