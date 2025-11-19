@@ -25,7 +25,7 @@ namespace SegmentedControlSamples
             "Song Four",
         };
 
-        Timer _timer;        
+        readonly Timer _timer;        
         public ICommand SegmentTappedCommand { get; }
 
 
