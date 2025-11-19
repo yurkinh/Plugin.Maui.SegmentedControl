@@ -11,23 +11,20 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
       - name: Verify commit exists in origin/main
         run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
           git branch --remote --contains | grep origin/main
-      - name: Set VERSION variable from tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV      
-      - name: Install .NET MAUI
+      - name: Install .NET MAUI workload
         run: dotnet workload install maui
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-      - name: Get version information from tag
-        id: get_version
-        uses: battila7/get-version-action@v2
-      - name: Pack
-        run: msbuild -t:pack -r src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.sln -property:Configuration=Release
-      - name: Push
-        run: dotnet nuget push src\Plugin.Maui.SegmentedControl\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.NUGET_API_KEY }}
+      - name: Restore dependencies
+        run: dotnet restore src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj
+      - name: Build and Pack
+        run: dotnet pack src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj -c Release --no-restore
+      - name: Push to NuGet
+        run: dotnet nuget push src\Plugin.Maui.SegmentedControl\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
