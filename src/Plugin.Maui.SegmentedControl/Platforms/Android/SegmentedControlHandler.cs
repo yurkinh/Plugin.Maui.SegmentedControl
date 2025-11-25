@@ -80,6 +80,8 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         if (layoutInflater.Inflate(Resource.Layout.RadioGroup, null) is not RadioGroup nativeControl)
             throw new InvalidOperationException("Failed to inflate RadioGroup");
 
+        nativeControl.LayoutParameters = new LayoutParams(LayoutParams.MatchParent, LayoutParams.WrapContent);
+
         var children = VirtualView.Children;
         if (children == null || children.Count == 0)
             return nativeControl;
@@ -164,7 +166,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         if (NeedsExactMeasure(virtualView))
         {
             platformView.Measure(
-                MakeMeasureSpecExact(platformView, frame.Width), 
+                MakeMeasureSpecExact(platformView, frame.Width),
                 MakeMeasureSpecExact(platformView, frame.Height));
         }
     }
@@ -281,10 +283,10 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
         else
         {
-            var textColor = isButtonEnabled ? 
-                VirtualView.TextColor.ToPlatform() 
+            var textColor = isButtonEnabled ?
+                VirtualView.TextColor.ToPlatform()
                 : VirtualView.DisabledTextColor.ToPlatform();
-        
+
             rb.SetTextColor(textColor);
         }
 
@@ -305,7 +307,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
             var t = (int)rb.Tag;
             VirtualView.SendSegmentTapped(t);
 
-            if(VirtualView.GroupToggleBehavior == GroupToggleBehavior.None)
+            if (VirtualView.GroupToggleBehavior == GroupToggleBehavior.None)
                 rb.Checked = false;
         }
     }
@@ -391,8 +393,8 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         control.SendValueChanged();
     }
 
-      
-        static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control) => OnPropertyChanged(handler, control);
+
+    static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control) => OnPropertyChanged(handler, control);
 
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
