@@ -50,12 +50,16 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
             Font = font
         }, UIControlState.Normal);
         
-        // Apply padding (content insets)
+        // Apply padding via content position adjustment
         var padding = VirtualView.Padding;
-        if (OperatingSystem.IsIOSVersionAtLeast(14, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(14, 0))
+        var horizontalOffset = (nfloat)(padding.Left - padding.Right);
+        var verticalOffset = (nfloat)(padding.Top - padding.Bottom);
+        for (nint i = 0; i < segmentControl.NumberOfSegments; i++)
         {
-            segmentControl.Layer.MasksToBounds = false;
-            segmentControl.ContentOffset = new CoreGraphics.CGSize(padding.Left - padding.Right, padding.Top - padding.Bottom);
+            segmentControl.SetContentPositionAdjustment(
+                new CoreGraphics.CGSize(horizontalOffset / 2, verticalOffset / 2), 
+                UISegmentedControlSegment.Any, 
+                UIBarMetrics.Default);
         }
         
         segmentControl.SelectedSegment = VirtualView.SelectedSegment;
@@ -137,11 +141,12 @@ public partial class SegmentedControlHandler : ViewHandler<SegmentedControl, UIS
     static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
     {
         var padding = control.Padding;
-        if (OperatingSystem.IsIOSVersionAtLeast(14, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(14, 0))
-        {
-            handler.PlatformView.Layer.MasksToBounds = false;
-            handler.PlatformView.ContentOffset = new CoreGraphics.CGSize(padding.Left - padding.Right, padding.Top - padding.Bottom);
-        }
+        var horizontalOffset = (nfloat)(padding.Left - padding.Right);
+        var verticalOffset = (nfloat)(padding.Top - padding.Bottom);
+        handler.PlatformView.SetContentPositionAdjustment(
+            new CoreGraphics.CGSize(horizontalOffset / 2, verticalOffset / 2), 
+            UISegmentedControlSegment.Any, 
+            UIBarMetrics.Default);
     }
 
 }
