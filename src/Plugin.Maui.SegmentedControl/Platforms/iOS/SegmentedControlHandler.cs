@@ -46,7 +46,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         segmentControl.TintColor = VirtualView.IsEnabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledTintColor.ToPlatform();
         
         // Apply text attributes with font size
-        var font = UIKit.UIFont.SystemFontOfSize((nfloat)VirtualView.FontSize);
+        var font = UIFont.SystemFontOfSize((nfloat)VirtualView.FontSize);
         segmentControl.SetTitleTextAttributes(new UIStringAttributes() 
         { 
             ForegroundColor = VirtualView.SelectedTextColor.ToPlatform(),
@@ -65,7 +65,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         for (nint i = 0; i < segmentControl.NumberOfSegments; i++)
         {
             segmentControl.SetContentPositionAdjustment(
-                new CoreGraphics.CGSize(horizontalOffset / 2, verticalOffset / 2), 
+                new UIOffset(horizontalOffset / 2, verticalOffset / 2), 
                 UISegmentedControlSegment.Any, 
                 UIBarMetrics.Default);
         }
@@ -132,7 +132,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
 
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        var font = UIKit.UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
         { 
             ForegroundColor = control.SelectedTextColor.ToPlatform(),
@@ -142,7 +142,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
 
     static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        var font = UIKit.UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
         { 
             ForegroundColor = control.TextColor.ToPlatform(),
@@ -152,7 +152,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
 
     static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
     {
-        var font = UIKit.UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
         { 
             ForegroundColor = control.SelectedTextColor.ToPlatform(),
@@ -171,7 +171,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         var horizontalOffset = (nfloat)(padding.Left - padding.Right);
         var verticalOffset = (nfloat)(padding.Top - padding.Bottom);
         handler.PlatformView.SetContentPositionAdjustment(
-            new CoreGraphics.CGSize(horizontalOffset / 2, verticalOffset / 2), 
+            new UIOffset(horizontalOffset / 2, verticalOffset / 2), 
             UISegmentedControlSegment.Any, 
             UIBarMetrics.Default);
     }
