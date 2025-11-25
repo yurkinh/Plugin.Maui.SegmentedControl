@@ -32,6 +32,8 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         [nameof(SegmentedControl.DisabledTextColor)] = MapDisabledTextColor,
         [nameof(SegmentedControl.DisabledTintColor)] = MapDisabledTintColor,
         [nameof(SegmentedControl.Children)] = MapChildren,
+        [nameof(SegmentedControl.FontSize)] = MapFontSize,
+        [nameof(SegmentedControl.Padding)] = MapPadding,
     };
 
     public SegmentedControlHandler() : base(Mapper)
@@ -248,6 +250,17 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
         SetTintColor(rb, tintColor);
 
+        // Apply font size
+        rb.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)VirtualView.FontSize);
+
+        // Apply padding
+        var padding = VirtualView.Padding;
+        rb.SetPadding(
+            (int)Context.ToPixels(padding.Left),
+            (int)Context.ToPixels(padding.Top),
+            (int)Context.ToPixels(padding.Right),
+            (int)Context.ToPixels(padding.Bottom));
+
         rb.Tag = i;
         rb.Click += RadioButton_Click;
 
@@ -438,6 +451,29 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
             {
                 v.SetTextColor(control.SelectedTextColor.ToPlatform());
             }
+        }
+    }
+
+    static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        for (int i = 0; i < handler.PlatformView.ChildCount; i++)
+        {
+            var v = (RadioButton)handler.PlatformView.GetChildAt(i);
+            v.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)control.FontSize);
+        }
+    }
+
+    static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        var padding = control.Padding;
+        for (int i = 0; i < handler.PlatformView.ChildCount; i++)
+        {
+            var v = (RadioButton)handler.PlatformView.GetChildAt(i);
+            v.SetPadding(
+                (int)handler.Context.ToPixels(padding.Left),
+                (int)handler.Context.ToPixels(padding.Top),
+                (int)handler.Context.ToPixels(padding.Right),
+                (int)handler.Context.ToPixels(padding.Bottom));
         }
     }
 

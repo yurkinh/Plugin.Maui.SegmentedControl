@@ -25,6 +25,8 @@
                 TextColor="Blue"
                 DisabledTextColor="Gray"
                 DisabledBackgroundColor="Black"
+                FontSize="16"
+                Padding="10,5,10,5"
                 Margin="8,8,8,8">
 
                 <ctrl:SegmentedControl.Children>

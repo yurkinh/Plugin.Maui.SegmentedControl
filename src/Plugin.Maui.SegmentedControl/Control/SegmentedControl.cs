@@ -149,6 +149,20 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         }
     }
 
+    public static readonly BindableProperty FontSizeProperty = BindableProperty.Create(nameof(FontSize), typeof(double), typeof(SegmentedControl), 14.0);
+    public double FontSize
+    {
+        get { return (double)GetValue(FontSizeProperty); }
+        set { SetValue(FontSizeProperty, value); }
+    }
+
+    public static readonly BindableProperty PaddingProperty = BindableProperty.Create(nameof(Padding), typeof(Thickness), typeof(SegmentedControl), new Thickness(0));
+    public Thickness Padding
+    {
+        get { return (Thickness)GetValue(PaddingProperty); }
+        set { SetValue(PaddingProperty, value); }
+    }
+
 
 
     public event EventHandler<ValueChangedEventArgs> ValueChanged;

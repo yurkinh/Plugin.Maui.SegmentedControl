@@ -14,7 +14,9 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         [nameof(SegmentedControl.TintColor)] = MapTintColor,
         [nameof(SegmentedControl.SelectedTextColor)] = MapSelectedTextColor,
         [nameof(SegmentedControl.TextColor)] = MapTextColor,
-        [nameof(SegmentedControl.Children)] = MapChildren
+        [nameof(SegmentedControl.Children)] = MapChildren,
+        [nameof(SegmentedControl.FontSize)] = MapFontSize,
+        [nameof(SegmentedControl.Padding)] = MapPadding,
     };    
 
     public SegmentedControlHandler() : base(Mapper)
@@ -42,7 +44,32 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
 
         segmentControl.Enabled = VirtualView.IsEnabled;
         segmentControl.TintColor = VirtualView.IsEnabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledTintColor.ToPlatform();
-        segmentControl.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = VirtualView.SelectedTextColor.ToPlatform() }, UIControlState.Selected);
+        
+        // Apply text attributes with font size
+        var font = UIFont.SystemFontOfSize((nfloat)VirtualView.FontSize);
+        segmentControl.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = VirtualView.SelectedTextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Selected);
+        segmentControl.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = VirtualView.TextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Normal);
+        
+        // Apply padding via content position adjustment
+        var padding = VirtualView.Padding;
+        var horizontalOffset = (nfloat)(padding.Left - padding.Right);
+        var verticalOffset = (nfloat)(padding.Top - padding.Bottom);
+        for (nint i = 0; i < segmentControl.NumberOfSegments; i++)
+        {
+            segmentControl.SetContentPositionAdjustment(
+                new UIOffset(horizontalOffset / 2, verticalOffset / 2), 
+                UISegmentedControlSegment.Any, 
+                UIBarMetrics.Default);
+        }
+        
         segmentControl.SelectedSegment = VirtualView.SelectedSegment;
         return segmentControl;
     }
@@ -105,12 +132,48 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
 
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = control.SelectedTextColor.ToPlatform() }, UIControlState.Selected);        
+        var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.SelectedTextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Selected);        
     }
 
     static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() { ForegroundColor = control.TextColor.ToPlatform() }, UIControlState.Normal);
+        var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.TextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Normal);
+    }
+
+    static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.SelectedTextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Selected);
+        handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
+        { 
+            ForegroundColor = control.TextColor.ToPlatform(),
+            Font = font
+        }, UIControlState.Normal);
+    }
+
+    static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        var padding = control.Padding;
+        var horizontalOffset = (nfloat)(padding.Left - padding.Right);
+        var verticalOffset = (nfloat)(padding.Top - padding.Bottom);
+        handler.PlatformView.SetContentPositionAdjustment(
+            new UIOffset(horizontalOffset / 2, verticalOffset / 2), 
+            UISegmentedControlSegment.Any, 
+            UIBarMetrics.Default);
     }
 
 }

@@ -76,7 +76,19 @@ public void Handle_ValueChanged(object o, int e)
 
 ```SelectedTextColor```: Selected segment text color (Color, default #FFFFFF)
 
-```SelectedSegment```: Selected segment index (int, default 0).
+```TextColor```: Text color for unselected segments (Color, default #000000)
+
+```SelectedSegment```: Selected segment index (int, default 0)
+
+```FontSize```: Font size for segment text (double, default 14.0)
+
+```Padding```: Padding for segment content (Thickness, default 0)
+
+```DisabledBackgroundColor```: Background color for disabled unselected segments (Color, default Gray)
+
+```DisabledTextColor```: Text color for disabled segments (Color, default Gray)
+
+```DisabledTintColor```: Tint color for disabled selected segments (Color, default Gray)
 
 **Event Handlers**
 

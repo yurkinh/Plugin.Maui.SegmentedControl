@@ -35,6 +35,16 @@ public interface ISegmentedControl: IView
     /// </summary>
     public Color DisabledTintColor { get; set; }
 
+    /// <summary>
+    /// Font size for segment text
+    /// </summary>
+    public double FontSize { get; set; }
+
+    /// <summary>
+    /// Padding for segment content
+    /// </summary>
+    public Thickness Padding { get; set; }
+
     public int SelectedSegment { get; set; }
 
     public GroupToggleBehavior GroupToggleBehavior { get; set; }
