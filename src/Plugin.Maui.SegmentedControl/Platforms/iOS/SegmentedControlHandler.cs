@@ -87,12 +87,12 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         platformView.ValueChanged -= PlatformView_ValueChanged;
     }
 
-    void PlatformView_ValueChanged(object sender, EventArgs e)
+    private void PlatformView_ValueChanged(object sender, EventArgs e)
     {
         VirtualView.SelectedSegment = (int)PlatformView.SelectedSegment;
     }
 
-    static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
     {
         UISegmentedControl segmentControl = handler.PlatformView;
         segmentControl.RemoveAllSegments();
@@ -109,20 +109,20 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         segmentControl.SelectedSegment = handler.VirtualView.SelectedSegment;
     }
 
-    static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         handler.PlatformView.SelectedSegmentTintColor = control.IsEnabled 
             ? control.TintColor.ToPlatform() 
             : control.DisabledTintColor.ToPlatform();
     }
 
-    static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
     {
         handler.PlatformView.SelectedSegment = control.SelectedSegment;
         control.SendValueChanged();
     }
 
-    static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control)
     {
         handler.PlatformView.Enabled = control.IsEnabled;
         handler.PlatformView.TintColor = control.IsEnabled 
@@ -130,7 +130,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
             : control.DisabledTintColor.ToPlatform();
     }
 
-    static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
@@ -140,7 +140,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         }, UIControlState.Selected);        
     }
 
-    static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
@@ -150,7 +150,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         }, UIControlState.Normal);
     }
 
-    static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
     {
         var font = UIFont.SystemFontOfSize((nfloat)control.FontSize);
         handler.PlatformView.SetTitleTextAttributes(new UIStringAttributes() 
@@ -165,7 +165,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, UISegmented
         }, UIControlState.Normal);
     }
 
-    static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
     {
         var padding = control.Padding;
         var horizontalOffset = (nfloat)(padding.Left - padding.Right);

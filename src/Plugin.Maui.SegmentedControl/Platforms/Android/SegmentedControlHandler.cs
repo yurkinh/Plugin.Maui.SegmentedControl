@@ -14,7 +14,7 @@ namespace Plugin.Maui.SegmentedControl.Handlers;
 
 public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 {
-    RadioButton? _selectedRadioButton;
+    private RadioButton? _selectedRadioButton;
 
     public static IPropertyMapper<SegmentedControl, SegmentedControlHandler> Mapper = new PropertyMapper<SegmentedControl, SegmentedControlHandler>(ViewMapper)
     {
@@ -75,10 +75,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
     protected override RadioGroup CreatePlatformView()
     {
-        var layoutInflater = LayoutInflater.From(Context);
-        if (layoutInflater == null)
-            throw new InvalidOperationException("Failed to get LayoutInflater from Context");
-
+        var layoutInflater = LayoutInflater.From(Context) ?? throw new InvalidOperationException("Failed to get LayoutInflater from Context");
         if (layoutInflater.Inflate(Resource.Layout.RadioGroup, null) is not RadioGroup nativeControl)
             throw new InvalidOperationException("Failed to inflate RadioGroup");
 
@@ -207,7 +204,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         _selectedRadioButton = null;
     }
 
-    void PlatformView_CheckedChange(object? sender, RadioGroup.CheckedChangeEventArgs e)
+    private void PlatformView_CheckedChange(object? sender, RadioGroup.CheckedChangeEventArgs e)
     {
         if (VirtualView.GroupToggleBehavior == GroupToggleBehavior.None)
             return;
@@ -261,20 +258,18 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         VirtualView.SelectedSegment = radioId;
     }
 
-    void ConfigureRadioButton(int i, bool isEnabled, RadioButton rb)
+    private void ConfigureRadioButton(int i, bool isEnabled, RadioButton rb)
     {
         bool isButtonEnabled = VirtualView.IsEnabled && isEnabled;
 
         if (rb.Enabled != isButtonEnabled)
             rb.Enabled = isButtonEnabled;
 
-        var isSelected = VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio
-            && i == VirtualView.SelectedSegment;
+        var isSelected = VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio && i == VirtualView.SelectedSegment;
 
         var tintColor = GetTintColor(isSelected, isButtonEnabled);
 
-        if (i == VirtualView.SelectedSegment
-            && VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio)
+        if (i == VirtualView.SelectedSegment && VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio)
         {
             var selectedTextColor = isButtonEnabled ?
                 VirtualView.SelectedTextColor.ToPlatform() :
@@ -285,9 +280,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
         else
         {
-            var textColor = isButtonEnabled ?
-                VirtualView.TextColor.ToPlatform()
-                : VirtualView.DisabledTextColor.ToPlatform();
+            var textColor = isButtonEnabled ? VirtualView.TextColor.ToPlatform() : VirtualView.DisabledTextColor.ToPlatform();
 
             rb.SetTextColor(textColor);
         }
@@ -327,9 +320,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
     private Android.Graphics.Color GetTintColor(bool selected, bool enabled)
     {
-        return enabled ?
-            VirtualView.TintColor.ToPlatform() :
-            VirtualView.DisabledTintColor.ToPlatform();
+        return enabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledTintColor.ToPlatform();
 
         // 'tint' is an outline + selected button color, so 
         //the backgroundcolor for the segmented control can't be used as 'tint'
@@ -387,9 +378,9 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control) => OnPropertyChanged(handler, control);
+    private static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control) => OnPropertyChanged(handler, control);
 
-    static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
     {
         if (handler.VirtualView.GroupToggleBehavior == GroupToggleBehavior.None)
             return;
@@ -407,9 +398,9 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     }
 
 
-    static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control) => OnPropertyChanged(handler, control);
+    private static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control) => OnPropertyChanged(handler, control);
 
-    static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         if (handler.VirtualView.GroupToggleBehavior == GroupToggleBehavior.None)
             return;
@@ -423,7 +414,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void MapDisabledTintColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapDisabledTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         if (control.SelectedSegment < 0
             || control.SelectedSegment >= handler.PlatformView.ChildCount
@@ -439,7 +430,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     }
 
 
-    static void MapDisabledTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapDisabledTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         //go through children and update disabled segments
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
@@ -454,7 +445,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void MapDisabledBackgroundColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapDisabledBackgroundColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         //go through children and update disabled segments
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
@@ -468,7 +459,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     }
 
 
-    static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
     {
         //entire Children property has been changed -- woo hoo we essentialy have to
         //re-create all the segments now
@@ -525,7 +516,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
         {
@@ -543,7 +534,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
     {
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
         {
@@ -552,7 +543,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
+    private static void MapPadding(SegmentedControlHandler handler, SegmentedControl control)
     {
         var padding = control.Padding;
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
@@ -566,7 +557,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    static void OnPropertyChanged(SegmentedControlHandler handler, SegmentedControl control)
+    private static void OnPropertyChanged(SegmentedControlHandler handler, SegmentedControl control)
     {
         if (handler.PlatformView == null || control?.Children == null)
             return;
