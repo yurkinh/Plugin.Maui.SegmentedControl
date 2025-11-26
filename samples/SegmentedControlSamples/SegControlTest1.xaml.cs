@@ -4,49 +4,41 @@ namespace SegmentedControlSamples;
 
 public partial class SegControlTest1 : ContentView
 {
-	public SegControlTest1()
-	{
-		InitializeComponent();
-        SegmentedControl.Children = _list1;
-
-    }
-
-    private readonly SegmentedControlOption[] _list1 = {
-            new SegmentedControlOption{Text="Test0A"},
-            new SegmentedControlOption{Text="Test1A"},
-            new SegmentedControlOption{Text="Test2A"}
-        };
-
-    internal SegmentedControlOption[] List2 = {
-            new SegmentedControlOption{Text="Item1B"},
-            new SegmentedControlOption{Text="Item2B"},
-            new SegmentedControlOption{Text="Item3B"},
-            new SegmentedControlOption{Text="Item4B"},
-            new SegmentedControlOption{Text="Item5B"}
-        };
-    bool _isList2 = false;
-
-
-    private void ChangeChildren_Clicked(object sender, EventArgs e)
+    public SegControlTest1()
     {
-        if(_isList2)
-        {
-            SegmentedControl.Children = _list1;
-        }
-        else
-        {
-            SegmentedControl.Children = List2;
-        }
-        _isList2 = !_isList2;
+        InitializeComponent();
+        SegmentedControl.Children = list1;
+    }
+
+    readonly SegmentedControlOption[] list1 = [
+            new() {Text="Test0A"},
+            new() {Text="Test1A"},
+            new() {Text="Test2A"}
+        ];
+
+    internal readonly SegmentedControlOption[] List2 = [
+            new() {Text="Item1B"},
+            new() {Text="Item2B"},
+            new() {Text="Item3B"},
+            new() {Text="Item4B"},
+            new() {Text="Item5B"}
+        ];
+    bool isList2 = false;
+
+
+    void ChangeChildren_Clicked(object sender, EventArgs e)
+    {
+        SegmentedControl.Children = isList2 ? list1 : List2;
+        isList2 = !isList2;
     }
 
 
-    private void Button_OnClicked(object sender, EventArgs e)
+    void Button_OnClicked(object sender, EventArgs e)
     {
         SegmentWithStack.Children.Remove(SegmentedControl);
     }
 
-    private void ButtonTintColor_OnClicked(object sender, EventArgs e)
+    void ButtonTintColor_OnClicked(object sender, EventArgs e)
     {
         if (SegmentedControl.SelectedTextColor != Colors.Aqua)
         {
@@ -58,9 +50,9 @@ public partial class SegControlTest1 : ContentView
         }
     }
 
-    private void ButtonSelectedTextColor_OnClicked(object sender, EventArgs e)
+    void ButtonSelectedTextColor_OnClicked(object sender, EventArgs e)
     {
-        if(SegmentedControl.SelectedTextColor != Colors.Red)
+        if (SegmentedControl.SelectedTextColor != Colors.Red)
         {
             SegmentedControl.SelectedTextColor = Colors.Red;
         }
@@ -71,71 +63,71 @@ public partial class SegControlTest1 : ContentView
 
     }
 
-    private void ButtonBorderColor_OnClicked(object sender, EventArgs e)
+    void ButtonBorderColor_OnClicked(object sender, EventArgs e)
     {
         //SegmentedControl.BorderColor = Color.Crimson;
     }
 
-    private void ButtonBorderWidth_OnClicked(object sender, EventArgs e)
+    void ButtonBorderWidth_OnClicked(object sender, EventArgs e)
     {
         //SegmentedControl.BorderWidth = (SegmentedControl.BorderWidth + 1) % 3;
     }
 
-    private void ButtonBackgroundColor_OnClicked(object sender, EventArgs e)
+    void ButtonBackgroundColor_OnClicked(object sender, EventArgs e)
     {
         SegmentedControl.BackgroundColor = Colors.HotPink;
     }
 
-    private void Disable_OnClicked(object sender, EventArgs e)
+    void Disable_OnClicked(object sender, EventArgs e)
     {
         SegmentedControl.IsEnabled = false;
     }
 
-    private void Enable_OnClicked(object sender, EventArgs e)
+    void Enable_OnClicked(object sender, EventArgs e)
     {
         SegmentedControl.IsEnabled = true;
     }
 
-    private bool _isDisabledColorChanged;
-    private Color _defaultDisabledColor;
-    private void ChangeDisabledTintColor_OnClicked(object sender, EventArgs e)
+    bool isDisabledColorChanged;
+    Color defaultDisabledColor;
+    void ChangeDisabledTintColor_OnClicked(object sender, EventArgs e)
     {
-        if (_isDisabledColorChanged)
+        if (isDisabledColorChanged)
         {
-            SegmentedControl.DisabledTintColor = _defaultDisabledColor;
+            SegmentedControl.DisabledTintColor = defaultDisabledColor;
         }
         else
         {
-            _defaultDisabledColor = SegmentedControl.DisabledTintColor;
+            defaultDisabledColor = SegmentedControl.DisabledTintColor;
             SegmentedControl.DisabledTintColor = Colors.Red;
         }
-        _isDisabledColorChanged = !_isDisabledColorChanged;
+        isDisabledColorChanged = !isDisabledColorChanged;
     }
 
-    private void ChangeSelectedSegment(object sender, EventArgs e)
+    void ChangeSelectedSegment(object sender, EventArgs e)
     {
-        if(SegmentedControl.SelectedSegment < 0)
+        if (SegmentedControl.SelectedSegment < 0)
         {
             SegmentedControl.SelectedSegment = 0;
             return;
         }
 
-        if(SegmentedControl.SelectedSegment < SegmentedControl.Children.Count) 
+        if (SegmentedControl.SelectedSegment < SegmentedControl.Children.Count)
         {
             SegmentedControl.SelectedSegment += 1;
             return;
         }
 
         SegmentedControl.SelectedSegment = 0;
-        
+
     }
 
-    private void ChangeFirstText(object sender, EventArgs e)
+    void ChangeFirstText(object sender, EventArgs e)
     {
         const string boundText = "Item 1B";
-        SegmentedControl.Children[0].Text = 
-            SegmentedControl.Children[0].Text == boundText 
-            ? "Item1" 
+        SegmentedControl.Children[0].Text =
+            SegmentedControl.Children[0].Text == boundText
+            ? "Item1"
             : boundText;
     }
 
@@ -186,24 +178,22 @@ public partial class SegControlTest1 : ContentView
         //}
     }
 
- 
-    private bool _isTextColorChanged;
-    private Color _defaultTextColor;
 
-    private void Button_TextColor(object sender, EventArgs e)
+    bool isTextColorChanged;
+    Color defaultTextColor;
+
+    void Button_TextColor(object sender, EventArgs e)
     {
-        if (!_isTextColorChanged)
+        if (!isTextColorChanged)
         {
-            _defaultTextColor = SegmentedControl.TextColor;
+            defaultTextColor = SegmentedControl.TextColor;
             SegmentedControl.TextColor = Colors.Red;
-            _isTextColorChanged = true;
+            isTextColorChanged = true;
         }
         else
         {
-            _isTextColorChanged = false;
-            SegmentedControl.TextColor = _defaultTextColor;
+            isTextColorChanged = false;
+            SegmentedControl.TextColor = defaultTextColor;
         }
     }
-
-
 }

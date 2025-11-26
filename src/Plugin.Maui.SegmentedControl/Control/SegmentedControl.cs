@@ -7,14 +7,14 @@ namespace Plugin.Maui.SegmentedControl;
 
 public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, ISegmentedControl
 {
-    
+
 
     public SegmentedControl()
     {
         Children = new List<SegmentedControlOption>();
     }
 
-    
+
     #region Children
 
     public void NotifySegmentChanged(SegmentedControlOption segment)
@@ -27,15 +27,14 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
 
     public static readonly BindableProperty ChildrenProperty
         = BindableProperty.Create(
-            nameof(Children), 
+            nameof(Children),
             typeof(IList<SegmentedControlOption>),
-            typeof(SegmentedControl), 
+            typeof(SegmentedControl),
             default(IList<SegmentedControlOption>),
             BindingMode.OneWay,
-             
+
             propertyChanging: OnChildrenChanging);
-    private static void OnChildrenChanging(
-        BindableObject bindable, object oldValue, object newValue)
+    static void OnChildrenChanging(BindableObject bindable, object oldValue, object newValue)
     {
         if (bindable is SegmentedControl segmentedControl
             && newValue is IList<SegmentedControlOption> newItemsList
@@ -51,7 +50,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
             }
             segmentedControl.Children = newItemsList;
         }
-        
+
     }
 
     public IList<SegmentedControlOption> Children
@@ -65,7 +64,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
     {
         base.OnChildAdded(child);
 
-        if(child is SegmentedControlOption ctr)
+        if (child is SegmentedControlOption ctr)
         {
             ctr.SetParent(this);
         }
@@ -132,11 +131,11 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
         }
     }
 
-    public static readonly BindableProperty GroupToggleBehaviorProperty 
+    public static readonly BindableProperty GroupToggleBehaviorProperty
         = BindableProperty.Create(
-            nameof(GroupToggleBehavior), 
+            nameof(GroupToggleBehavior),
             typeof(GroupToggleBehavior),
-            typeof(SegmentedControl), 
+            typeof(SegmentedControl),
             GroupToggleBehavior.Radio);
 
     public GroupToggleBehavior GroupToggleBehavior

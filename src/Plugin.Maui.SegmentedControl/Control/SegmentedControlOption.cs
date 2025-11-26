@@ -1,29 +1,26 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Plugin.Maui.SegmentedControl;
 
 public class SegmentedControlOption : View, ISegmentedControlOption
 {
-    SegmentedControl _parent;
+    SegmentedControl parent;
 
-    int _instanceId;
+    readonly int instanceId;
 
     public SegmentedControlOption()
     {
-        _instanceId = Random.Shared.Next();
-        Debug.WriteLine($"Created SegmentedControlOption {_instanceId}");
+        instanceId = Random.Shared.Next();
+        Trace.WriteLine($"Created SegmentedControlOption {instanceId}");
     }
 
     public void SetParent(SegmentedControl parent)
     {
-        _parent = parent;
+        this.parent = parent;
     }
 
 
-    public static readonly BindableProperty TextProperty
-    = BindableProperty.Create(nameof(Text), typeof(string), 
-                typeof(SegmentedControlOption), string.Empty);
+    public static readonly BindableProperty TextProperty = BindableProperty.Create(nameof(Text), typeof(string), typeof(SegmentedControlOption), string.Empty);
     public string Text
     {
         get => (string)GetValue(TextProperty);
@@ -34,11 +31,10 @@ public class SegmentedControlOption : View, ISegmentedControlOption
     {
         base.OnPropertyChanged(propertyName);
 
-        if (propertyName == nameof(Text)
-            || propertyName == nameof(IsEnabled))
+        if (propertyName == nameof(Text) || propertyName == nameof(IsEnabled))
         {
-            Debug.WriteLine($"OnPropertyChanged SegmentedControlOption {_instanceId} Property {propertyName}");
-            _parent?.NotifySegmentChanged(this);
+            Trace.WriteLine($"OnPropertyChanged SegmentedControlOption {instanceId} Property {propertyName}");
+            parent?.NotifySegmentChanged(this);
         }
     }
 

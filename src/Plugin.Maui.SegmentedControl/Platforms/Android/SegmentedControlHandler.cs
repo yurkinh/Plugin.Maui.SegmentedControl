@@ -44,7 +44,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     /// Helper method to create and configure a RadioButton for a segment.
     /// Extracted to reduce duplication between CreatePlatformView and MapChildren.
     /// </summary>
-    private RadioButton? CreateRadioButton(LayoutInflater layoutInflater, int index, SegmentedControlOption segment, int totalCount)
+    RadioButton? CreateRadioButton(LayoutInflater layoutInflater, int index, SegmentedControlOption segment, int totalCount)
     {
         if (layoutInflater.Inflate(Resource.Layout.RadioButton, null) is not RadioButton rb)
             return null;
@@ -75,10 +75,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
     protected override RadioGroup CreatePlatformView()
     {
-        var layoutInflater = LayoutInflater.From(Context);
-        if (layoutInflater == null)
-            throw new InvalidOperationException("Failed to get LayoutInflater from Context");
-
+        var layoutInflater = LayoutInflater.From(Context) ?? throw new InvalidOperationException("Failed to get LayoutInflater from Context");
         if (layoutInflater.Inflate(Resource.Layout.RadioGroup, null) is not RadioGroup nativeControl)
             throw new InvalidOperationException("Failed to inflate RadioGroup");
 
@@ -268,13 +265,11 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         if (rb.Enabled != isButtonEnabled)
             rb.Enabled = isButtonEnabled;
 
-        var isSelected = VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio
-            && i == VirtualView.SelectedSegment;
+        var isSelected = VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio && i == VirtualView.SelectedSegment;
 
         var tintColor = GetTintColor(isSelected, isButtonEnabled);
 
-        if (i == VirtualView.SelectedSegment
-            && VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio)
+        if (i == VirtualView.SelectedSegment && VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio)
         {
             var selectedTextColor = isButtonEnabled ?
                 VirtualView.SelectedTextColor.ToPlatform() :
@@ -285,9 +280,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
         else
         {
-            var textColor = isButtonEnabled ?
-                VirtualView.TextColor.ToPlatform()
-                : VirtualView.DisabledTextColor.ToPlatform();
+            var textColor = isButtonEnabled ? VirtualView.TextColor.ToPlatform() : VirtualView.DisabledTextColor.ToPlatform();
 
             rb.SetTextColor(textColor);
         }
@@ -313,7 +306,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
 
     }
 
-    private void RadioButton_Click(object? sender, EventArgs e)
+    void RadioButton_Click(object? sender, EventArgs e)
     {
         if (sender is RadioButton rb && rb.Tag != null)
         {
@@ -325,11 +318,9 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         }
     }
 
-    private Android.Graphics.Color GetTintColor(bool selected, bool enabled)
+    Android.Graphics.Color GetTintColor(bool selected, bool enabled)
     {
-        return enabled ?
-            VirtualView.TintColor.ToPlatform() :
-            VirtualView.DisabledTintColor.ToPlatform();
+        return enabled ? VirtualView.TintColor.ToPlatform() : VirtualView.DisabledTintColor.ToPlatform();
 
         // 'tint' is an outline + selected button color, so 
         //the backgroundcolor for the segmented control can't be used as 'tint'
@@ -338,7 +329,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         // and ability to pick a background color for selected(checked) segment
     }
 
-    private void SetTintColor(RadioButton rb, Android.Graphics.Color tintColor)
+    void SetTintColor(RadioButton rb, Android.Graphics.Color tintColor)
     {
         // Minimum API level check - this code requires API 18+
         if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBeanMr2)

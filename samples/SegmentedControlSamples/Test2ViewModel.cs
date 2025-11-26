@@ -1,135 +1,110 @@
 ﻿using Plugin.Maui.SegmentedControl;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SegmentedControlSamples
+namespace SegmentedControlSamples;
+
+public enum PlayerStatus
 {
-    public enum PlayerStatus
+    Stopped = 0,
+    Playing = 1,
+}
+
+public class Test2ViewModel : INotifyPropertyChanged
+{
+    public List<string> PlayList =
+    [
+        "Song One",
+        "Song Two",
+        "Song Three",
+        "Song Four",
+        ];
+
+    public ICommand SegmentTappedCommand { get; }
+
+    public Test2ViewModel()
     {
-        Stopped = 0,
-        Playing = 1,
+        SegmentTappedCommand = new Command<SegmentTappedEventArgs>((a) =>
+        {
+            if (a.Index == 1)
+            {
+                PlayerStatus = PlayerStatus == PlayerStatus.Playing ? PlayerStatus.Stopped : PlayerStatus.Playing;
+            }
+        });
+        
+        PlayerStatus = PlayerStatus.Stopped;
+        PlayButtonText = "Play";
+        ForwardButtonEnabled = true;
+        ForwardButtonText = "Forward";
+        SelectedSegment = -1;
     }
 
-    public class Test2ViewModel : INotifyPropertyChanged
+    PlayerStatus playerStatus;
+    PlayerStatus PlayerStatus
     {
-        public List<string> _playList = new List<string>
+        get { return playerStatus; }
+        set
         {
-            "Song One",
-            "Song Two",
-            "Song Three",
-            "Song Four",
-        };
-
-        readonly Timer _timer;        
-        public ICommand SegmentTappedCommand { get; }
-
-
-
-        public Test2ViewModel()
-        {
-            _timer = new Timer(OnTimer);
-
-            SegmentTappedCommand = new Command<SegmentTappedEventArgs>((a) =>
-            {
-                if (a.Index == 1)
-                {
-                    if (PlayerStatus == PlayerStatus.Playing)
-                    {
-                        PlayerStatus = PlayerStatus.Stopped;
-                    }
-                    else
-                    {
-                        PlayerStatus = PlayerStatus.Playing;
-                    }
-                }
-            });
-            PlayerStatus = PlayerStatus.Stopped;
-            PlayButtonText = "Play";
-            ForwardButtonEnabled = true;
-            ForwardButtonText = "Forward";
-            SelectedSegment = -1;
-        }
-
-        private void OnTimer(object s)
-        {
-
-        }
-
-
-        private PlayerStatus _playerStatus;
-        private PlayerStatus PlayerStatus
-        {
-            get { return _playerStatus; }
-            set 
-            { 
-                _playerStatus = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayerStatusText)));
-                PlayButtonText = _playerStatus == PlayerStatus.Playing ? "STOP" : "Play";
-            }
-        }
-
-        public string PlayerStatusText
-        {
-            get { return this.PlayerStatus.ToString(); }
-        }
-
-        private string _playButtonText;
-        public string PlayButtonText
-        {
-            get => _playButtonText;
-            set { _playButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayButtonText))); }
-        }
-
-        private bool _backButtonEnabled = true;
-        public bool BackButtonEnabled
-        {
-            get => _backButtonEnabled;
-            set { _backButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(BackButtonEnabled))); }
-        }
-
-        private bool _forwardButtonEnabled = true;
-        public bool ForwardButtonEnabled
-        {
-            get => _forwardButtonEnabled;
-            set { _forwardButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonEnabled))); }
-        }
-
-        private string _forwardButtonText;
-        public string ForwardButtonText
-        {
-            get => _forwardButtonText;
-            set { _forwardButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonText))); }
-        }
-
-
-        private int _selectedSegment;
-        public int SelectedSegment
-        {
-            get => _selectedSegment;
-            set
-            {
-                _selectedSegment = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedSegment)));
-            }
-        }
-        private IList<SegmentedControlOption> _segmentItemsSource;
-        public IList<SegmentedControlOption> SegmentItemsSource
-        {
-            get => _segmentItemsSource;
-            set { _segmentItemsSource = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(SegmentItemsSource))); }
-        }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChanged?.Invoke(this, e);
+            playerStatus = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayerStatusText)));
+            PlayButtonText = playerStatus == PlayerStatus.Playing ? "STOP" : "Play";
         }
     }
 
+    public string PlayerStatusText
+    {
+        get { return PlayerStatus.ToString(); }
+    }
+
+    string playButtonText;
+    public string PlayButtonText
+    {
+        get => playButtonText;
+        set { playButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayButtonText))); }
+    }
+
+    bool backButtonEnabled = true;
+    public bool BackButtonEnabled
+    {
+        get => backButtonEnabled;
+        set { backButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(BackButtonEnabled))); }
+    }
+
+    bool forwardButtonEnabled = true;
+    public bool ForwardButtonEnabled
+    {
+        get => forwardButtonEnabled;
+        set { forwardButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonEnabled))); }
+    }
+
+    string forwardButtonText;
+    public string ForwardButtonText
+    {
+        get => forwardButtonText;
+        set { forwardButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonText))); }
+    }
+
+    int selectedSegment;
+    public int SelectedSegment
+    {
+        get => selectedSegment;
+        set
+        {
+            selectedSegment = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedSegment)));
+        }
+    }
+
+    IList<SegmentedControlOption> segmentItemsSource;
+    public IList<SegmentedControlOption> SegmentItemsSource
+    {
+        get => segmentItemsSource;
+        set { segmentItemsSource = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(SegmentItemsSource))); }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        PropertyChanged?.Invoke(this, e);
+    }
 }

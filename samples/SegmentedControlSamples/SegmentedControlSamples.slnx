@@ -1,6 +1,10 @@
 <Solution>
+  <Folder Name="/samples/" />
   <Folder Name="/samples/SegmentedControlSamples/">
     <Project Path="SegmentedControlSamples.csproj" Type="C#" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/src/Plugin.Maui.SegmentedControl/">
     <Project Path="..\..\src\Plugin.Maui.SegmentedControl\Plugin.Maui.SegmentedControl.csproj" Type="C#" />
