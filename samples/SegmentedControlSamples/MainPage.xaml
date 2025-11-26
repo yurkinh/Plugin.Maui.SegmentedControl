@@ -2,34 +2,35 @@
 <ContentPage
     x:Class="SegmentedControlSamples.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:local="clr-namespace:SegmentedControlSamples"
-    x:DataType="local:MainPage"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
+    xmlns:controls="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+    xmlns:local="clr-namespace:SegmentedControlSamples"
+    x:DataType="local:MainPage">
 
-    <Grid x:Name="segContainer" 
-                         HorizontalOptions="Fill" >
+    <Grid x:Name="segContainer" HorizontalOptions="Fill">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <controls:SegmentedControl
-            Grid.Row="0"
             x:Name="SegControl"
+            Grid.Row="0"
             HorizontalOptions="Fill"
             SelectedTextColor="White"
             TextColor="Black"
             TintColor="Red"
             ValueChanged="Handle_ValueChanged">
             <controls:SegmentedControl.Children>
-                <controls:SegmentedControlOption Text="Tab1"/>
-                <controls:SegmentedControlOption Text="Tab2"/>
-                <controls:SegmentedControlOption Text="Tab3"/>
-                <controls:SegmentedControlOption Text="Attachments"/>
+                <controls:SegmentedControlOption Text="Tab1" />
+                <controls:SegmentedControlOption Text="Tab2" />
+                <controls:SegmentedControlOption Text="Tab3" />
+                <controls:SegmentedControlOption Text="Attachments" />
             </controls:SegmentedControl.Children>
         </controls:SegmentedControl>
-        <ScrollView VerticalOptions="Start" x:Name="SegContent" Grid.Row="1" >
-        </ScrollView>
+        <ScrollView
+            x:Name="SegContent"
+            Grid.Row="1"
+            VerticalOptions="Start" />
     </Grid>
 
 </ContentPage>

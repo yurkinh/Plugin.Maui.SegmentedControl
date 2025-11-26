@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
-             x:Class="SegmentedControlSamples.SegControlTest1">
-    <Grid  x:Name="SegmentWithStack" 
-                              HorizontalOptions="CenterAndExpand"
-                              VerticalOptions="StartAndExpand"
-              
-            Padding="5"
-            RowSpacing="5">
+<ContentView
+    x:Class="SegmentedControlSamples.SegControlTest1"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctrl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
+    <Grid
+        x:Name="SegmentWithStack"
+        Padding="5"
+        RowSpacing="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -32,13 +31,13 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Text="Segmented Control defaults, set up from code" />
-        <ctrl:SegmentedControl  Grid.Row="1"
-                x:Name="SegmentedControl" HorizontalOptions="FillAndExpand" >
-        </ctrl:SegmentedControl>
+        <ctrl:SegmentedControl
+            x:Name="SegmentedControl"
+            Grid.Row="1"
+            HorizontalOptions="Fill" />
 
         <Button Grid.Row="2" Text="Text Color" Clicked="Button_TextColor"/>
         <Button Grid.Row="3" Text="Change First Item Text" Clicked="ChangeFirstText"/>
