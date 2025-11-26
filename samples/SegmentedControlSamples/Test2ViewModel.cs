@@ -28,16 +28,10 @@ public class Test2ViewModel : INotifyPropertyChanged
         {
             if (a.Index == 1)
             {
-                if (PlayerStatus == PlayerStatus.Playing)
-                {
-                    PlayerStatus = PlayerStatus.Stopped;
-                }
-                else
-                {
-                    PlayerStatus = PlayerStatus.Playing;
-                }
+                PlayerStatus = PlayerStatus == PlayerStatus.Playing ? PlayerStatus.Stopped : PlayerStatus.Playing;
             }
         });
+        
         PlayerStatus = PlayerStatus.Stopped;
         PlayButtonText = "Play";
         ForwardButtonEnabled = true;

@@ -28,14 +28,7 @@ public partial class SegControlTest1 : ContentView
 
     void ChangeChildren_Clicked(object sender, EventArgs e)
     {
-        if (isList2)
-        {
-            SegmentedControl.Children = list1;
-        }
-        else
-        {
-            SegmentedControl.Children = List2;
-        }
+        SegmentedControl.Children = isList2 ? list1 : List2;
         isList2 = !isList2;
     }
 
