@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Plugin.Maui.SegmentedControl.Control
+﻿namespace Plugin.Maui.SegmentedControl.Control
 {
-    public class ElementChildrenChanging : EventArgs
+    public class ElementChildrenChanging(IList<SegmentedControlOption> oldValues, IList<SegmentedControlOption> newValues) : EventArgs
     {
-        public ElementChildrenChanging(IList<SegmentedControlOption> oldValues, IList<SegmentedControlOption> newValues)
-        {
-            OldValues = oldValues;
-            NewValues = newValues;
-        }
-        public IList<SegmentedControlOption> OldValues { get; }
-        public IList<SegmentedControlOption> NewValues { get; }
+        public IList<SegmentedControlOption> OldValues { get; } = oldValues;
+        public IList<SegmentedControlOption> NewValues { get; } = newValues;
     }
 }

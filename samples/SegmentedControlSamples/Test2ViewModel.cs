@@ -1,10 +1,5 @@
 ﻿using Plugin.Maui.SegmentedControl;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SegmentedControlSamples
@@ -17,22 +12,20 @@ namespace SegmentedControlSamples
 
     public class Test2ViewModel : INotifyPropertyChanged
     {
-        public List<string> _playList = new List<string>
-        {
+        public List<string> _playList =
+        [
             "Song One",
             "Song Two",
             "Song Three",
             "Song Four",
-        };
+        ];
 
-        readonly Timer _timer;        
+        readonly Timer timer;        
         public ICommand SegmentTappedCommand { get; }
-
-
 
         public Test2ViewModel()
         {
-            _timer = new Timer(OnTimer);
+            timer = new Timer(OnTimer);
 
             SegmentTappedCommand = new Command<SegmentTappedEventArgs>((a) =>
             {
@@ -60,43 +53,42 @@ namespace SegmentedControlSamples
 
         }
 
-
-        private PlayerStatus _playerStatus;
+        private PlayerStatus playerStatus;
         private PlayerStatus PlayerStatus
         {
-            get { return _playerStatus; }
+            get { return playerStatus; }
             set 
             { 
-                _playerStatus = value;
+                playerStatus = value;
                 OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayerStatusText)));
-                PlayButtonText = _playerStatus == PlayerStatus.Playing ? "STOP" : "Play";
+                PlayButtonText = playerStatus == PlayerStatus.Playing ? "STOP" : "Play";
             }
         }
 
         public string PlayerStatusText
         {
-            get { return this.PlayerStatus.ToString(); }
+            get { return PlayerStatus.ToString(); }
         }
 
-        private string _playButtonText;
+        private string playButtonText;
         public string PlayButtonText
         {
-            get => _playButtonText;
-            set { _playButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayButtonText))); }
+            get => playButtonText;
+            set { playButtonText = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(PlayButtonText))); }
         }
 
-        private bool _backButtonEnabled = true;
+        private bool backButtonEnabled = true;
         public bool BackButtonEnabled
         {
-            get => _backButtonEnabled;
-            set { _backButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(BackButtonEnabled))); }
+            get => backButtonEnabled;
+            set { backButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(BackButtonEnabled))); }
         }
 
-        private bool _forwardButtonEnabled = true;
+        private bool forwardButtonEnabled = true;
         public bool ForwardButtonEnabled
         {
-            get => _forwardButtonEnabled;
-            set { _forwardButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonEnabled))); }
+            get => forwardButtonEnabled;
+            set { forwardButtonEnabled = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(ForwardButtonEnabled))); }
         }
 
         private string _forwardButtonText;
@@ -107,21 +99,21 @@ namespace SegmentedControlSamples
         }
 
 
-        private int _selectedSegment;
+        private int selectedSegment;
         public int SelectedSegment
         {
-            get => _selectedSegment;
+            get => selectedSegment;
             set
             {
-                _selectedSegment = value;
+                selectedSegment = value;
                 OnPropertyChanged(new PropertyChangedEventArgs(nameof(SelectedSegment)));
             }
         }
-        private IList<SegmentedControlOption> _segmentItemsSource;
+        private IList<SegmentedControlOption> segmentItemsSource;
         public IList<SegmentedControlOption> SegmentItemsSource
         {
-            get => _segmentItemsSource;
-            set { _segmentItemsSource = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(SegmentItemsSource))); }
+            get => segmentItemsSource;
+            set { segmentItemsSource = value; OnPropertyChanged(new PropertyChangedEventArgs(nameof(SegmentItemsSource))); }
         }
 
 

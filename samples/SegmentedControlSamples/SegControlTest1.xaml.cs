@@ -7,23 +7,23 @@ public partial class SegControlTest1 : ContentView
 	public SegControlTest1()
 	{
 		InitializeComponent();
-        SegmentedControl.Children = _list1;
+        SegmentedControl.Children = list1;
 
     }
 
-    private readonly SegmentedControlOption[] _list1 = {
-            new SegmentedControlOption{Text="Test0A"},
-            new SegmentedControlOption{Text="Test1A"},
-            new SegmentedControlOption{Text="Test2A"}
-        };
+    private readonly SegmentedControlOption[] list1 = [
+            new() {Text="Test0A"},
+            new() {Text="Test1A"},
+            new() {Text="Test2A"}
+        ];
 
-    internal SegmentedControlOption[] List2 = {
-            new SegmentedControlOption{Text="Item1B"},
-            new SegmentedControlOption{Text="Item2B"},
-            new SegmentedControlOption{Text="Item3B"},
-            new SegmentedControlOption{Text="Item4B"},
-            new SegmentedControlOption{Text="Item5B"}
-        };
+    internal SegmentedControlOption[] List2 = [
+            new() {Text="Item1B"},
+            new() {Text="Item2B"},
+            new() {Text="Item3B"},
+            new() {Text="Item4B"},
+            new() {Text="Item5B"}
+        ];
     bool _isList2 = false;
 
 
@@ -31,7 +31,7 @@ public partial class SegControlTest1 : ContentView
     {
         if(_isList2)
         {
-            SegmentedControl.Children = _list1;
+            SegmentedControl.Children = list1;
         }
         else
         {
@@ -187,23 +187,21 @@ public partial class SegControlTest1 : ContentView
     }
 
  
-    private bool _isTextColorChanged;
-    private Color _defaultTextColor;
+    private bool isTextColorChanged;
+    private Color defaultTextColor;
 
     private void Button_TextColor(object sender, EventArgs e)
     {
-        if (!_isTextColorChanged)
+        if (!isTextColorChanged)
         {
-            _defaultTextColor = SegmentedControl.TextColor;
+            defaultTextColor = SegmentedControl.TextColor;
             SegmentedControl.TextColor = Colors.Red;
-            _isTextColorChanged = true;
+            isTextColorChanged = true;
         }
         else
         {
-            _isTextColorChanged = false;
-            SegmentedControl.TextColor = _defaultTextColor;
+            isTextColorChanged = false;
+            SegmentedControl.TextColor = defaultTextColor;
         }
     }
-
-
 }
