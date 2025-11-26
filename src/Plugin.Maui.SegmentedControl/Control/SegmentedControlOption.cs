@@ -33,7 +33,7 @@ public class SegmentedControlOption : View, ISegmentedControlOption
 
         if (propertyName == nameof(Text) || propertyName == nameof(IsEnabled))
         {
-            Debug.WriteLine($"OnPropertyChanged SegmentedControlOption {instanceId} Property {propertyName}");
+            Trace.WriteLine($"OnPropertyChanged SegmentedControlOption {instanceId} Property {propertyName}");
             parent?.NotifySegmentChanged(this);
         }
     }
