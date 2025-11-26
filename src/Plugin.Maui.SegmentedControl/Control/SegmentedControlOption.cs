@@ -4,9 +4,9 @@ namespace Plugin.Maui.SegmentedControl;
 
 public class SegmentedControlOption : View, ISegmentedControlOption
 {
-    private SegmentedControl parent;
+    SegmentedControl parent;
 
-    private readonly int instanceId;
+    readonly int instanceId;
 
     public SegmentedControlOption()
     {
