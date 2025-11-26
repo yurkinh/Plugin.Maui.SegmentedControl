@@ -11,7 +11,7 @@ public class SegmentedControlOption : View, ISegmentedControlOption
     public SegmentedControlOption()
     {
         instanceId = Random.Shared.Next();
-        Debug.WriteLine($"Created SegmentedControlOption {instanceId}");
+        Trace.WriteLine($"Created SegmentedControlOption {instanceId}");
     }
 
     public void SetParent(SegmentedControl parent)
