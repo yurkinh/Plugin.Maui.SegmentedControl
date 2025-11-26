@@ -1,5 +1,5 @@
 ## Prerequisites
-1.	Install the latest stable (.NET SDK)[https://dotnet.microsoft.com/en-us/download].
+1.	Install the latest stable [.NET SDK](https://dotnet.microsoft.com/en-us/download).
 2.	Install .NET MAUI workloads (we recommend using Visual Studio installer).
 
 ## Setting Up GitHub Copilot
