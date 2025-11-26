@@ -4,11 +4,11 @@ public partial class MainPage : ContentPage
 {
 
 
-	public MainPage()
-	{
-		InitializeComponent();
+    public MainPage()
+    {
+        InitializeComponent();
 
-        Title = "Segmented Control";        
+        Title = "Segmented Control";
     }
 
     void Handle_ValueChanged(object sender, Plugin.Maui.SegmentedControl.ValueChangedEventArgs e)
@@ -30,7 +30,7 @@ public partial class MainPage : ContentPage
                 SegContent.Content = new Label() { Text = "TEST 4 tab selected" };
                 break;
         }
-    }    
+    }
 
 }
 

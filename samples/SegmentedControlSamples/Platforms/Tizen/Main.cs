@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.Maui;
-using Microsoft.Maui.Hosting;
-
-namespace SegmentedControlSamples;
+﻿namespace SegmentedControlSamples;
 
 class Program : MauiApplication
 {
