@@ -1,5 +1,5 @@
 ## Prerequisites
-1.	Install the latest stable (.NET SDK)[https://dotnet.microsoft.com/en-us/download].
+1.	Install the latest stable [.NET SDK](https://dotnet.microsoft.com/en-us/download).
 2.	Install .NET MAUI workloads (we recommend using Visual Studio installer).
 
 ## Setting Up GitHub Copilot
@@ -22,7 +22,7 @@
 * Use **is** for null checking and type checking.
 * Use file-scoped namespaces to reduce code verbosity.
 * Avoid using the **!** null forgiving operator.
-** Follow naming conventions for enums and property names.
+* Follow naming conventions for enums and property names.
 
 ### Debug Logging
 * Always use `Trace.WriteLine()` instead of `Debug.WriteLine` for debug logging because `Debug.WriteLine` is removed by the compiler in Release builds
