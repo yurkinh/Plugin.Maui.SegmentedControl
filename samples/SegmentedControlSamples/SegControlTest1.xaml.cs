@@ -8,7 +8,6 @@ public partial class SegControlTest1 : ContentView
     {
         InitializeComponent();
         SegmentedControl.Children = list1;
-
     }
 
     readonly SegmentedControlOption[] list1 = [
@@ -17,7 +16,7 @@ public partial class SegControlTest1 : ContentView
             new() {Text="Test2A"}
         ];
 
-    internal SegmentedControlOption[] List2 = [
+    internal readonly SegmentedControlOption[] List2 = [
             new() {Text="Item1B"},
             new() {Text="Item2B"},
             new() {Text="Item3B"},
