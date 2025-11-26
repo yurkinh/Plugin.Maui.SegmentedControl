@@ -34,7 +34,7 @@ public class SegmentedControl : View, IViewContainer<SegmentedControlOption>, IS
             BindingMode.OneWay,
 
             propertyChanging: OnChildrenChanging);
-    private static void OnChildrenChanging(BindableObject bindable, object oldValue, object newValue)
+    static void OnChildrenChanging(BindableObject bindable, object oldValue, object newValue)
     {
         if (bindable is SegmentedControl segmentedControl
             && newValue is IList<SegmentedControlOption> newItemsList
