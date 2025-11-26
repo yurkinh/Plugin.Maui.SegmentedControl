@@ -11,7 +11,7 @@ public class SegmentedControlOption : View, ISegmentedControlOption
     public SegmentedControlOption()
     {
         instanceId = Random.Shared.Next();
-        Debug.WriteLine($"Created SegmentedControlOption {instanceId}");
+        Trace.WriteLine($"Created SegmentedControlOption {instanceId}");
     }
 
     public void SetParent(SegmentedControl parent)
@@ -33,7 +33,7 @@ public class SegmentedControlOption : View, ISegmentedControlOption
 
         if (propertyName == nameof(Text) || propertyName == nameof(IsEnabled))
         {
-            Debug.WriteLine($"OnPropertyChanged SegmentedControlOption {instanceId} Property {propertyName}");
+            Trace.WriteLine($"OnPropertyChanged SegmentedControlOption {instanceId} Property {propertyName}");
             parent?.NotifySegmentChanged(this);
         }
     }
