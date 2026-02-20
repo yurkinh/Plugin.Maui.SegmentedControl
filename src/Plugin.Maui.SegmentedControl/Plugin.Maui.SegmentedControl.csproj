@@ -60,6 +60,8 @@
 	  <None Remove="Extensions\" />
 	  <None Remove="Platforms\MacCatalyst\" />
 	  <None Remove="Platforms\Windows\" />
+	  <None Remove="Platforms\Windows\NativeSegmented\" />
+	  <None Remove="Platforms\Windows\Themes\" />
 	  <None Remove="Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
@@ -69,7 +71,13 @@
 	  <Folder Include="Extensions\" />
 	  <Folder Include="Platforms\MacCatalyst\" />
 	  <Folder Include="Platforms\Windows\" />
+	  <Folder Include="Platforms\Windows\NativeSegmented\" />
+	  <Folder Include="Platforms\Windows\Themes\" />
 	  <Folder Include="Handlers\" />
+	</ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+	  <Page Include="Platforms\Windows\Themes\SegmentedStyles.xaml" />
+	  <Page Include="Platforms\Windows\Themes\Generic.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <AndroidResource Include="Platforms\Android\Resources\color\segmented_control_text.xml" />
