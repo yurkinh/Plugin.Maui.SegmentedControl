@@ -2,6 +2,7 @@
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Plugin.Maui.SegmentedControl.Control;
 using Plugin.Maui.SegmentedControl.Windows;
 using WinBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
@@ -11,6 +12,14 @@ namespace Plugin.Maui.SegmentedControl.Handlers;
 
 public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
 {
+    // Cached brushes to avoid per-update allocations
+    WinBrush _tintBrush = new(Microsoft.UI.Colors.Transparent);
+    WinBrush _selectedTextBrush = new(Microsoft.UI.Colors.Transparent);
+    WinBrush _textBrush = new(Microsoft.UI.Colors.Transparent);
+    WinBrush _disabledTextBrush = new(Microsoft.UI.Colors.Transparent);
+    WinBrush _disabledBackgroundBrush = new(Microsoft.UI.Colors.Transparent);
+    WinBrush _disabledTintBrush = new(Microsoft.UI.Colors.Transparent);
+
     public static IPropertyMapper<SegmentedControl, SegmentedControlHandler> Mapper =
         new PropertyMapper<SegmentedControl, SegmentedControlHandler>(ViewMapper)
         {
@@ -157,22 +166,30 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
 
     void ApplyColors(Segmented segmented)
     {
-        var tintColor = new WinBrush(VirtualView.TintColor.ToWindowsColor());
-        var selectedTextColor = new WinBrush(VirtualView.SelectedTextColor.ToWindowsColor());
-        var textColor = new WinBrush(VirtualView.TextColor.ToWindowsColor());
-        var disabledTextColor = new WinBrush(VirtualView.DisabledTextColor.ToWindowsColor());
+        _tintBrush = new WinBrush(VirtualView.TintColor.ToWindowsColor());
+        _selectedTextBrush = new WinBrush(VirtualView.SelectedTextColor.ToWindowsColor());
+        _textBrush = new WinBrush(VirtualView.TextColor.ToWindowsColor());
+        _disabledTextBrush = new WinBrush(VirtualView.DisabledTextColor.ToWindowsColor());
+        // DisabledBackgroundColor: background of disabled unselected segments
+        _disabledBackgroundBrush = new WinBrush(VirtualView.DisabledBackgroundColor.ToWindowsColor());
+        // DisabledTintColor: border/outline color when the control is disabled
+        _disabledTintBrush = new WinBrush(VirtualView.DisabledTintColor.ToWindowsColor());
 
-        segmented.Resources["ButtonItemBackgroundSelected"] = tintColor;
-        segmented.Resources["ButtonItemBackgroundSelectedPointerOver"] = tintColor;
-        segmented.Resources["ButtonItemBackgroundSelectedPressed"] = tintColor;
-        segmented.Resources["ButtonItemForegroundSelected"] = selectedTextColor;
-        segmented.Resources["ButtonItemForegroundSelectedPointerOver"] = selectedTextColor;
-        segmented.Resources["ButtonItemForegroundSelectedPressed"] = selectedTextColor;
-        segmented.Resources["ButtonItemForeground"] = textColor;
-        segmented.Resources["ButtonItemForegroundPointerOver"] = textColor;
-        segmented.Resources["ButtonItemForegroundDisabled"] = disabledTextColor;
-        segmented.Resources["ButtonItemBackgroundDisabled"] = new WinBrush(VirtualView.DisabledBackgroundColor.ToWindowsColor());
-        segmented.Resources["SegmentedBorderBrush"] = tintColor;
+        segmented.Resources["ButtonItemBackgroundSelected"] = _tintBrush;
+        segmented.Resources["ButtonItemBackgroundSelectedPointerOver"] = _tintBrush;
+        segmented.Resources["ButtonItemBackgroundSelectedPressed"] = _tintBrush;
+        segmented.Resources["ButtonItemForegroundSelected"] = _selectedTextBrush;
+        segmented.Resources["ButtonItemForegroundSelectedPointerOver"] = _selectedTextBrush;
+        segmented.Resources["ButtonItemForegroundSelectedPressed"] = _selectedTextBrush;
+        segmented.Resources["ButtonItemForeground"] = _textBrush;
+        segmented.Resources["ButtonItemForegroundPointerOver"] = _textBrush;
+        segmented.Resources["ButtonItemForegroundDisabled"] = _disabledTextBrush;
+        // DisabledBackgroundColor controls the item background when disabled
+        segmented.Resources["ButtonItemBackgroundDisabled"] = _disabledBackgroundBrush;
+        // Border reflects TintColor when enabled, DisabledTintColor when disabled
+        segmented.Resources["SegmentedBorderBrush"] = VirtualView.IsEnabled
+            ? _tintBrush
+            : _disabledTintBrush;
     }
 
     static void MapIsEnabled(SegmentedControlHandler handler, SegmentedControl control)
@@ -184,6 +201,11 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
                 item.IsEnabled = control.IsEnabled && control.Children[i].IsEnabled;
             }
         }
+
+        // Toggle border between TintColor (enabled) and DisabledTintColor (disabled)
+        handler.PlatformView.Resources["SegmentedBorderBrush"] = control.IsEnabled
+            ? handler._tintBrush
+            : handler._disabledTintBrush;
     }
 
     static void MapSelectedSegment(SegmentedControlHandler handler, SegmentedControl control)
@@ -203,42 +225,53 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
 
     static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        var brush = new WinBrush(control.TintColor.ToWindowsColor());
-        handler.PlatformView.Resources["ButtonItemBackgroundSelected"] = brush;
-        handler.PlatformView.Resources["ButtonItemBackgroundSelectedPointerOver"] = brush;
-        handler.PlatformView.Resources["ButtonItemBackgroundSelectedPressed"] = brush;
-        handler.PlatformView.Resources["SegmentedBorderBrush"] = brush;
+        handler._tintBrush = new WinBrush(control.TintColor.ToWindowsColor());
+        handler.PlatformView.Resources["ButtonItemBackgroundSelected"] = handler._tintBrush;
+        handler.PlatformView.Resources["ButtonItemBackgroundSelectedPointerOver"] = handler._tintBrush;
+        handler.PlatformView.Resources["ButtonItemBackgroundSelectedPressed"] = handler._tintBrush;
+        // Only update the border if the control is currently enabled
+        if (control.IsEnabled)
+        {
+            handler.PlatformView.Resources["SegmentedBorderBrush"] = handler._tintBrush;
+        }
     }
 
     static void MapSelectedTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        var brush = new WinBrush(control.SelectedTextColor.ToWindowsColor());
-        handler.PlatformView.Resources["ButtonItemForegroundSelected"] = brush;
-        handler.PlatformView.Resources["ButtonItemForegroundSelectedPointerOver"] = brush;
-        handler.PlatformView.Resources["ButtonItemForegroundSelectedPressed"] = brush;
+        handler._selectedTextBrush = new WinBrush(control.SelectedTextColor.ToWindowsColor());
+        handler.PlatformView.Resources["ButtonItemForegroundSelected"] = handler._selectedTextBrush;
+        handler.PlatformView.Resources["ButtonItemForegroundSelectedPointerOver"] = handler._selectedTextBrush;
+        handler.PlatformView.Resources["ButtonItemForegroundSelectedPressed"] = handler._selectedTextBrush;
     }
 
     static void MapTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        var brush = new WinBrush(control.TextColor.ToWindowsColor());
-        handler.PlatformView.Resources["ButtonItemForeground"] = brush;
-        handler.PlatformView.Resources["ButtonItemForegroundPointerOver"] = brush;
+        handler._textBrush = new WinBrush(control.TextColor.ToWindowsColor());
+        handler.PlatformView.Resources["ButtonItemForeground"] = handler._textBrush;
+        handler.PlatformView.Resources["ButtonItemForegroundPointerOver"] = handler._textBrush;
     }
 
     static void MapDisabledBackgroundColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.Resources["ButtonItemBackgroundDisabled"] = new WinBrush(control.DisabledBackgroundColor.ToWindowsColor());
+        // DisabledBackgroundColor controls the background of disabled unselected segments
+        handler._disabledBackgroundBrush = new WinBrush(control.DisabledBackgroundColor.ToWindowsColor());
+        handler.PlatformView.Resources["ButtonItemBackgroundDisabled"] = handler._disabledBackgroundBrush;
     }
 
     static void MapDisabledTextColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.PlatformView.Resources["ButtonItemForegroundDisabled"] = new WinBrush(control.DisabledTextColor.ToWindowsColor());
+        handler._disabledTextBrush = new WinBrush(control.DisabledTextColor.ToWindowsColor());
+        handler.PlatformView.Resources["ButtonItemForegroundDisabled"] = handler._disabledTextBrush;
     }
 
     static void MapDisabledTintColor(SegmentedControlHandler handler, SegmentedControl control)
     {
-        // DisabledTintColor affects disabled selected background
-        handler.PlatformView.Resources["ButtonItemBackgroundDisabled"] = new WinBrush(control.DisabledTintColor.ToWindowsColor());
+        // DisabledTintColor controls the border/outline when the control is disabled
+        handler._disabledTintBrush = new WinBrush(control.DisabledTintColor.ToWindowsColor());
+        if (!control.IsEnabled)
+        {
+            handler.PlatformView.Resources["SegmentedBorderBrush"] = handler._disabledTintBrush;
+        }
     }
 
     static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
