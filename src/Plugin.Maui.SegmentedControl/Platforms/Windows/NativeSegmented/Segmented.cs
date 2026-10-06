@@ -67,6 +67,8 @@ public partial class Segmented : ListViewBase
     {
         var dir = e.Key switch
         {
+            VirtualKey.Left when FlowDirection is FlowDirection.RightToLeft => 1,
+            VirtualKey.Right when FlowDirection is FlowDirection.RightToLeft => -1,
             VirtualKey.Left or VirtualKey.Up => -1,
             VirtualKey.Right or VirtualKey.Down => 1,
             _ => 0,
