@@ -249,7 +249,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
         handler._textBrush = new WinBrush(control.TextColor.ToWindowsColor());
         handler.PlatformView.Resources["ButtonItemForeground"] = handler._textBrush;
         handler.PlatformView.Resources["ButtonItemForegroundPointerOver"] = handler._textBrush;
-    }
+        handler.PlatformView.Resources["ButtonItemForegroundPressed"] = handler._textBrush;
 
     static void MapDisabledBackgroundColor(SegmentedControlHandler handler, SegmentedControl control)
     {
