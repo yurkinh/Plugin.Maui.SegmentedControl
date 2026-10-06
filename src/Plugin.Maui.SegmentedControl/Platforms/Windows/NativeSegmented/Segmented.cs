@@ -82,6 +82,11 @@ public partial class Segmented : ListViewBase
 
     bool MoveFocus(int adjustment)
     {
+        if (Items.Count is 0)
+        {
+            return false;
+        }
+
         var currentContainerItem = GetCurrentContainerItem();
         if (currentContainerItem is null)
         {
@@ -90,7 +95,7 @@ public partial class Segmented : ListViewBase
 
         var currentItem = ItemFromContainer(currentContainerItem);
         var previousIndex = Items.IndexOf(currentItem);
-        var index = Math.Clamp(previousIndex + adjustment, 0, Items.Count);
+        var index = Math.Clamp(previousIndex + adjustment, 0, Items.Count - 1);
 
         if (index == previousIndex || ContainerFromIndex(index) is not SegmentedItem newItem)
         {

@@ -93,40 +93,40 @@
 
         <ResourceDictionary x:Key="HighContrast">
             <StaticResource x:Key="SegmentedBackground"
-                            ResourceKey="SystemColorButtonFaceColor" />
+                            ResourceKey="SystemColorButtonFaceColorBrush" />
             <StaticResource x:Key="SegmentedBorderBrush"
                             ResourceKey="SystemColorHighlightColorBrush" />
             <Thickness x:Key="SegmentedBorderThickness">1</Thickness>
 
             <StaticResource x:Key="ButtonItemBackground"
-                            ResourceKey="SystemColorButtonFaceColor" />
+                            ResourceKey="SystemColorButtonFaceColorBrush" />
             <StaticResource x:Key="ButtonItemBackgroundPointerOver"
-                            ResourceKey="SystemColorHighlightColor" />
+                            ResourceKey="SystemColorHighlightColorBrush" />
             <StaticResource x:Key="ButtonItemBackgroundPressed"
-                            ResourceKey="SystemColorHighlightColor" />
+                            ResourceKey="SystemColorHighlightColorBrush" />
             <StaticResource x:Key="ButtonItemBackgroundSelected"
-                            ResourceKey="SystemColorHighlightColor" />
+                            ResourceKey="SystemColorHighlightColorBrush" />
             <StaticResource x:Key="ButtonItemBackgroundSelectedPointerOver"
-                            ResourceKey="SystemColorHighlightColor" />
+                            ResourceKey="SystemColorHighlightColorBrush" />
             <StaticResource x:Key="ButtonItemBackgroundSelectedPressed"
-                            ResourceKey="SystemColorHighlightColor" />
+                            ResourceKey="SystemColorHighlightColorBrush" />
             <StaticResource x:Key="ButtonItemBackgroundDisabled"
-                            ResourceKey="SystemColorButtonFaceColor" />
+                            ResourceKey="SystemColorButtonFaceColorBrush" />
 
             <StaticResource x:Key="ButtonItemForeground"
-                            ResourceKey="SystemColorButtonTextColor" />
+                            ResourceKey="SystemColorButtonTextColorBrush" />
             <StaticResource x:Key="ButtonItemForegroundPointerOver"
-                            ResourceKey="SystemColorHighlightTextColor" />
+                            ResourceKey="SystemColorHighlightTextColorBrush" />
             <StaticResource x:Key="ButtonItemForegroundPressed"
-                            ResourceKey="SystemColorHighlightTextColor" />
+                            ResourceKey="SystemColorHighlightTextColorBrush" />
             <StaticResource x:Key="ButtonItemForegroundSelected"
-                            ResourceKey="SystemColorHighlightTextColor" />
+                            ResourceKey="SystemColorHighlightTextColorBrush" />
             <StaticResource x:Key="ButtonItemForegroundSelectedPointerOver"
-                            ResourceKey="SystemColorHighlightTextColor" />
+                            ResourceKey="SystemColorHighlightTextColorBrush" />
             <StaticResource x:Key="ButtonItemForegroundSelectedPressed"
-                            ResourceKey="SystemColorHighlightTextColor" />
+                            ResourceKey="SystemColorHighlightTextColorBrush" />
             <StaticResource x:Key="ButtonItemForegroundDisabled"
-                            ResourceKey="SystemColorGrayTextColor" />
+                            ResourceKey="SystemColorGrayTextColorBrush" />
 
             <x:Double x:Key="SegmentedItemDisabledOpacity">0.55</x:Double>
         </ResourceDictionary>
@@ -198,6 +198,24 @@
 
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Root"
+                                                                           Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonItemBackgroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_ContentPresenter"
+                                                                           Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{ThemeResource ButtonItemForegroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="PART_Root"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="{ThemeResource SegmentedItemDisabledOpacity}"
+                                                             Duration="0:0:0.083" />
+                                        </Storyboard>
+                                    </VisualState>
                                     <VisualState x:Name="PointerOver">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Root"
@@ -270,17 +288,6 @@
                                     </VisualState>
                                 </VisualStateGroup>
 
-                                <VisualStateGroup x:Name="DisabledStates">
-                                    <VisualState x:Name="Enabled" />
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="PART_Root"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="{ThemeResource SegmentedItemDisabledOpacity}"
-                                                             Duration="0:0:0.083" />
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
 
                             <Grid x:Name="ContentHolder"
