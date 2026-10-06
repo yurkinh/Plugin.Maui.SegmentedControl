@@ -97,8 +97,7 @@ public partial class Segmented : ListViewBase
             return false;
         }
 
-        newItem.Focus(FocusState.Keyboard);
-        return true;
+        return newItem.Focus(FocusState.Keyboard);
     }
 
     SegmentedItem? GetCurrentContainerItem()
