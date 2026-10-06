@@ -15,9 +15,9 @@ namespace Plugin.Maui.SegmentedControl.Windows;
 /// </summary>
 public partial class EqualPanel : Panel
 {
-    double _maxItemWidth = 0;
-    double _maxItemHeight = 0;
-    int _visibleItemsCount = 0;
+    double maxItemWidth = 0;
+    double maxItemHeight = 0;
+    int visibleItemsCount = 0;
 
     /// <summary>
     /// Identifies the Spacing dependency property.
@@ -66,20 +66,20 @@ public partial class EqualPanel : Panel
     /// <inheritdoc/>
     protected override WinSize MeasureOverride(WinSize availableSize)
     {
-        _maxItemWidth = 0;
-        _maxItemHeight = 0;
+        maxItemWidth = 0;
+        maxItemHeight = 0;
 
         var elements = Children.Where(e => e.Visibility == Microsoft.UI.Xaml.Visibility.Visible);
-        _visibleItemsCount = elements.Count();
+        visibleItemsCount = elements.Count();
 
         foreach (var child in elements)
         {
             child.Measure(availableSize);
-            _maxItemWidth = Math.Max(_maxItemWidth, child.DesiredSize.Width);
-            _maxItemHeight = Math.Max(_maxItemHeight, child.DesiredSize.Height);
+            maxItemWidth = Math.Max(maxItemWidth, child.DesiredSize.Width);
+            maxItemHeight = Math.Max(maxItemHeight, child.DesiredSize.Height);
         }
 
-        if (_visibleItemsCount <= 0)
+        if (visibleItemsCount <= 0)
         {
             return new WinSize(0, 0);
         }
@@ -91,20 +91,20 @@ public partial class EqualPanel : Panel
         };
 
         double uvU, uvV;
-        double maxU = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? _maxItemWidth : _maxItemHeight;
-        double maxV = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? _maxItemHeight : _maxItemWidth;
+        double maxU = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? maxItemWidth : maxItemHeight;
+        double maxV = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? maxItemHeight : maxItemWidth;
         double availableU = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? availableSize.Width : availableSize.Height;
 
         if (stretch)
         {
-            double totalU = availableU - (Spacing * (_visibleItemsCount - 1));
-            maxU = totalU / _visibleItemsCount;
+            double totalU = availableU - (Spacing * (visibleItemsCount - 1));
+            maxU = totalU / visibleItemsCount;
             uvU = availableU;
             uvV = maxV;
         }
         else
         {
-            uvU = (maxU * _visibleItemsCount) + (Spacing * (_visibleItemsCount - 1));
+            uvU = (maxU * visibleItemsCount) + (Spacing * (visibleItemsCount - 1));
             uvV = maxV;
         }
 
@@ -117,29 +117,29 @@ public partial class EqualPanel : Panel
     protected override WinSize ArrangeOverride(WinSize finalSize)
     {
         double posU = 0;
-        ref double maxItemU = ref _maxItemWidth;
+        ref double maxItemU = ref maxItemWidth;
         double finalSizeU = finalSize.Width;
 
         if (Orientation is Microsoft.UI.Xaml.Controls.Orientation.Vertical)
         {
-            maxItemU = ref _maxItemHeight;
+            maxItemU = ref maxItemHeight;
             finalSizeU = finalSize.Height;
         }
 
-        if (finalSizeU > _visibleItemsCount * maxItemU + (Spacing * (_visibleItemsCount - 1)))
+        if (finalSizeU > visibleItemsCount * maxItemU + (Spacing * (visibleItemsCount - 1)))
         {
-            maxItemU = (finalSizeU - (Spacing * (_visibleItemsCount - 1))) / _visibleItemsCount;
+            maxItemU = (finalSizeU - (Spacing * (visibleItemsCount - 1))) / visibleItemsCount;
         }
 
         foreach (var child in Children.Where(e => e.Visibility == Microsoft.UI.Xaml.Visibility.Visible))
         {
             if (Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal)
             {
-                child.Arrange(new WinRect(posU, 0, _maxItemWidth, _maxItemHeight));
+                child.Arrange(new WinRect(posU, 0, maxItemWidth, maxItemHeight));
             }
             else
             {
-                child.Arrange(new WinRect(0, posU, _maxItemWidth, _maxItemHeight));
+                child.Arrange(new WinRect(0, posU, maxItemWidth, maxItemHeight));
             }
 
             posU += maxItemU + Spacing;
