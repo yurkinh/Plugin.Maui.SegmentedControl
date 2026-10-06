@@ -22,7 +22,7 @@ public partial class SegmentedItem : ListViewItem
     internal const string HorizontalState = "Horizontal";
     internal const string VerticalState = "Vertical";
 
-    bool _isVertical = false;
+    bool isVertical = false;
 
     /// <summary>
     /// Creates a new instance of <see cref="SegmentedItem"/>.
@@ -62,7 +62,7 @@ public partial class SegmentedItem : ListViewItem
 
     internal void UpdateOrientation(Microsoft.UI.Xaml.Controls.Orientation orientation)
     {
-        _isVertical = orientation is Microsoft.UI.Xaml.Controls.Orientation.Vertical;
+        isVertical = orientation is Microsoft.UI.Xaml.Controls.Orientation.Vertical;
         UpdateVisualStates();
     }
 
@@ -70,14 +70,14 @@ public partial class SegmentedItem : ListViewItem
     {
         string contentState = (Icon is null, Content is null) switch
         {
-            (false, false) => _isVertical ? IconTopState : IconLeftState,
+            (false, false) => isVertical ? IconTopState : IconLeftState,
             (false, true) => IconOnlyState,
             (true, false) => ContentOnlyState,
             _ => ContentOnlyState,
         };
 
         Microsoft.UI.Xaml.VisualStateManager.GoToState(this, contentState, true);
-        Microsoft.UI.Xaml.VisualStateManager.GoToState(this, _isVertical ? VerticalState : HorizontalState, true);
+        Microsoft.UI.Xaml.VisualStateManager.GoToState(this, isVertical ? VerticalState : HorizontalState, true);
     }
 }
 #endif
