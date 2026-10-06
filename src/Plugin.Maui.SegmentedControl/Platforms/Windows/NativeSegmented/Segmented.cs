@@ -15,8 +15,8 @@ namespace Plugin.Maui.SegmentedControl.Windows;
 /// </summary>
 public partial class Segmented : ListViewBase
 {
-    int _internalSelectedIndex = -1;
-    bool _hasLoaded = false;
+    int internalSelectedIndex = -1;
+    bool hasLoaded = false;
 
     /// <summary>
     /// Creates a new instance of <see cref="Segmented"/>.
@@ -41,11 +41,11 @@ public partial class Segmented : ListViewBase
     {
         base.OnApplyTemplate();
 
-        if (!_hasLoaded)
+        if (!hasLoaded)
         {
             SelectedIndex = -1;
-            SelectedIndex = _internalSelectedIndex;
-            _hasLoaded = true;
+            SelectedIndex = internalSelectedIndex;
+            hasLoaded = true;
         }
 
         PreviewKeyDown -= Segmented_PreviewKeyDown;
@@ -113,9 +113,9 @@ public partial class Segmented : ListViewBase
     void OnSelectedIndexChanged(DependencyObject sender, DependencyProperty dp)
     {
         // Workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/8257
-        if (_internalSelectedIndex == -1 && SelectedIndex > -1)
+        if (internalSelectedIndex == -1 && SelectedIndex > -1)
         {
-            _internalSelectedIndex = SelectedIndex;
+            internalSelectedIndex = SelectedIndex;
         }
     }
 
