@@ -170,6 +170,13 @@
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="SegmentedIconPositionStates">
                                     <VisualState x:Name="IconLeft" />
+                                    <VisualState x:Name="IconTop">
+                                        <VisualState.Setters>
+                                            <Setter Target="PART_ContentPresenter.(Grid.Row)" Value="1" />
+                                            <Setter Target="PART_ContentPresenter.(Grid.Column)" Value="0" />
+                                            <Setter Target="ContentHolder.ColumnSpacing" Value="0" />
+                                        </VisualState.Setters>
+                                    </VisualState>
                                     <VisualState x:Name="IconOnly">
                                         <VisualState.Setters>
                                             <Setter Target="PART_ContentPresenter.Visibility" Value="Collapsed" />
@@ -182,6 +189,11 @@
                                             <Setter Target="ContentHolder.ColumnSpacing" Value="0" />
                                         </VisualState.Setters>
                                     </VisualState>
+                                </VisualStateGroup>
+
+                                <VisualStateGroup x:Name="SegmentedOrientationStates">
+                                    <VisualState x:Name="Horizontal" />
+                                    <VisualState x:Name="Vertical" />
                                 </VisualStateGroup>
 
                                 <VisualStateGroup x:Name="CommonStates">
@@ -280,6 +292,10 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <Viewbox x:Name="PART_IconBox"
                                          Width="16"
                                          VerticalAlignment="Center">
