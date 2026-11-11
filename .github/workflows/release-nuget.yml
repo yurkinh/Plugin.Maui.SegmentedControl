@@ -10,6 +10,10 @@ jobs:
   
     runs-on: windows-latest
 
+    permissions:
+      id-token: write   # Required for NuGet trusted publishing (OIDC)
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET 10
@@ -26,5 +30,10 @@ jobs:
         run: dotnet restore src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj
       - name: Build and Pack
         run: dotnet pack src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj -c Release --no-restore
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}  # nuget.org profile name, NOT email
       - name: Push to NuGet
-        run: dotnet nuget push src\Plugin.Maui.SegmentedControl\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        run: dotnet nuget push src\Plugin.Maui.SegmentedControl\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
