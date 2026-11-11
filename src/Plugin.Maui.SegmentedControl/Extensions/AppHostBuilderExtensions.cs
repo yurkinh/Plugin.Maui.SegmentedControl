@@ -5,7 +5,7 @@ namespace Plugin.Maui.SegmentedControl;
 public static class AppHostBuilderExtensions
 {
     /// <summary>
-    /// Configures the SimpleToolkit.Core package.
+    /// Configures the Plugin.Maui.SegmentedControl package.
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
@@ -16,7 +16,15 @@ public static class AppHostBuilderExtensions
             handlers.AddHandler<SegmentedControl, SegmentedControlHandler>();                
         });
 
+#if WINDOWS
+        // Merge WinUI3 styles for the extracted Segmented control so DefaultStyleKey resolves correctly
+        var resourceDict = new Microsoft.UI.Xaml.ResourceDictionary();
+        resourceDict.Source = new Uri("ms-appx:///Plugin.Maui.SegmentedControl/Platforms/Windows/Themes/SegmentedStyles.xaml");
+        Microsoft.UI.Xaml.Application.Current?.Resources?.MergedDictionaries?.Add(resourceDict);
+#endif
+
         return builder;
     }
 }
+
 

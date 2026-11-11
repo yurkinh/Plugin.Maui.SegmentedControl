@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- EnableWindowsTargeting allows the Windows TFM to be compiled on non-Windows hosts (macOS/Linux CI) -->
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>		
@@ -10,7 +12,9 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>		
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
 		
 
 		<!-- NuGet -->
@@ -56,6 +60,9 @@
 	  <None Remove="Platforms\Android\Resources\values\colors.xml" />
 	  <None Remove="Extensions\" />
 	  <None Remove="Platforms\MacCatalyst\" />
+	  <None Remove="Platforms\Windows\" />
+	  <None Remove="Platforms\Windows\NativeSegmented\" />
+	  <None Remove="Platforms\Windows\Themes\" />
 	  <None Remove="Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
@@ -64,7 +71,14 @@
 	  <Folder Include="Platforms\Android\" />
 	  <Folder Include="Extensions\" />
 	  <Folder Include="Platforms\MacCatalyst\" />
+	  <Folder Include="Platforms\Windows\" />
+	  <Folder Include="Platforms\Windows\NativeSegmented\" />
+	  <Folder Include="Platforms\Windows\Themes\" />
 	  <Folder Include="Handlers\" />
+	</ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+	  <Page Include="Platforms\Windows\Themes\SegmentedStyles.xaml" />
+	  <Page Include="Platforms\Windows\Themes\Generic.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <AndroidResource Include="Platforms\Android\Resources\color\segmented_control_text.xml" />
