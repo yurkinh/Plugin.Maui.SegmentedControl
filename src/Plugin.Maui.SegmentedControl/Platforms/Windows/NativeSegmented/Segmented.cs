@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 // Extracted from https://github.com/CommunityToolkit/Windows (MIT License)
 #if WINDOWS
+#nullable enable
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -67,8 +68,8 @@ public partial class Segmented : ListViewBase
     {
         var dir = e.Key switch
         {
-            VirtualKey.Left when FlowDirection is FlowDirection.RightToLeft => 1,
-            VirtualKey.Right when FlowDirection is FlowDirection.RightToLeft => -1,
+            VirtualKey.Left when FlowDirection is Microsoft.UI.Xaml.FlowDirection.RightToLeft => 1,
+            VirtualKey.Right when FlowDirection is Microsoft.UI.Xaml.FlowDirection.RightToLeft => -1,
             VirtualKey.Left or VirtualKey.Up => -1,
             VirtualKey.Right or VirtualKey.Down => 1,
             _ => 0,

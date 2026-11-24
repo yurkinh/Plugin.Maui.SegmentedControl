@@ -76,10 +76,8 @@
 	  <Folder Include="Platforms\Windows\Themes\" />
 	  <Folder Include="Handlers\" />
 	</ItemGroup>
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-	  <Page Include="Platforms\Windows\Themes\SegmentedStyles.xaml" />
-	  <Page Include="Platforms\Windows\Themes\Generic.xaml" />
-	</ItemGroup>
+	<!-- Platforms\Windows\**\*.xaml is included as a WinUI Page by the MAUI SDK automatically.
+	     Do not add explicit <Page> items: duplicates make XamlCompiler.exe fail silently (exit code 1). -->
 	<ItemGroup>
 	  <AndroidResource Include="Platforms\Android\Resources\color\segmented_control_text.xml" />
 	  <AndroidResource Include="Platforms\Android\Resources\drawable\segmented_control_background.xml" />
