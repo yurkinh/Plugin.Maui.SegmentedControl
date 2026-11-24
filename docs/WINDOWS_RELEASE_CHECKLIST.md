@@ -1,0 +1,217 @@
+# Windows support: implementation plan and release checklist
+
+Status of branch `copilot/analyze-segmented-control-effort` (PR #23).
+This branch adds a WinUI 3 implementation of `SegmentedControl`. It uses a copy of the
+Community Toolkit `Segmented` control, adapted for this library. **It is not ready to publish yet.**
+Work through the phases below in order on a Windows machine.
+
+## What's on the branch
+
+| File | Purpose |
+| --- | --- |
+| `src/Plugin.Maui.SegmentedControl/Platforms/Windows/SegmentedControlHandler.cs` | MAUI handler that maps `SegmentedControl` onto the native `Segmented` control |
+| `.../Platforms/Windows/NativeSegmented/Segmented*.cs`, `SegmentedItem*.cs`, `EqualPanel.cs` | Copy of the CommunityToolkit/Windows `Segmented` control (MIT) |
+| `.../Platforms/Windows/Themes/SegmentedStyles.xaml` | Styles, control templates, and the theme resource keys the handler overrides |
+| `.../Platforms/Windows/NativeSegmented/SegmentedResources.cs` | Merges `SegmentedStyles.xaml` into the application resources once, on first use by the handler |
+| `.../Extensions/AppHostBuilderExtensions.cs` | `UseSegmentedControl()` registers the handler |
+| `THIRD-PARTY-NOTICES.md` | MIT notice for the Community Toolkit code (also packed into the `.nupkg`) |
+| `Plugin.Maui.SegmentedControl.csproj` | Adds `net10.0-windows10.0.19041.0` |
+
+How the handler maps the control's properties:
+
+| `SegmentedControl` property | Windows behavior |
+| --- | --- |
+| `Children` | Updates segments in place when the count is unchanged; otherwise rebuilds them |
+| `SelectedSegment` | Sets `Segmented.SelectedIndex` (out of range is ignored), raises `ValueChanged` for valid indexes |
+| `GroupToggleBehavior` | `Radio` → `SelectionMode.Single`; `None` → `SelectionMode.None` (can change at runtime) |
+| `TintColor` | Background of the selected item; border while the control is enabled |
+| `SelectedTextColor` / `TextColor` | Text color of the selected item / of unselected items (normal, pointer-over, pressed) |
+| `DisabledBackgroundColor` / `DisabledTextColor` | Background / text color of disabled items |
+| `DisabledTintColor` | Background of the selected item and the border while disabled |
+| `FontSize`, `Padding` | Applied to each item (a `Padding` of 0 falls back to 11) |
+| `SegmentTapped` | Raised on click/tap, also in `None` mode |
+
+## Done: PR review findings and build fixes
+
+All review threads on PR #23 are addressed. The last round also fixed the Windows build, which was broken:
+
+- [x] The XAML compiler failed silently (`XamlCompiler.exe exited with code 1`). The MAUI SDK already
+  includes `Platforms\Windows\**\*.xaml` as WinUI `Page` items, and the explicit `<Page Include>` items
+  in the csproj passed each file a second time. Removed the explicit items.
+- [x] `MapTextColor` lost its closing brace in `de508c4`. Restored it, and `TextColor` now also drives
+  `ButtonItemForegroundPressed` (review: *Apply configured pressed foreground resource*).
+- [x] `FlowDirection is FlowDirection.RightToLeft` in `Segmented.cs` didn't compile (CS0176: the name
+  resolved to the instance property). Qualified as `Microsoft.UI.Xaml.FlowDirection.RightToLeft`.
+- [x] Renamed the handler's brush fields to unprefixed camelCase (review: *Rename underscore-prefixed brush fields*).
+- [x] Added `#nullable enable` to the Windows files that use nullable annotations (CS8632).
+- [x] Earlier rounds: RTL key mapping, focus result returned from `MoveFocus`, index clamped in `MoveFocus`,
+  high-contrast resources switched to `*Brush`, disabled colors applied in `CommonStates/Disabled`,
+  missing `IconTop`/`Horizontal`/`Vertical` states, field renames in `EqualPanel`/`Segmented`/`SegmentedItem`.
+
+Verified on Windows: the library builds for `net10.0-windows10.0.19041.0`, `net10.0`, `net10.0-android`
+with 0 warnings and 0 errors, and `samples/SegmentedControlSamples` builds for Windows. Running it is covered in phase 1.
+
+## Phase 1: Build and packaging blockers (done)
+
+### 1.1 Builds on macOS and Linux again
+
+The WinUI XAML compiler (`XamlCompiler.exe`) only runs on Windows, so the Windows TFM is now added only
+when building on Windows, and `EnableWindowsTargeting` is gone:
+
+```xml
+<TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+```
+
+**Release packages must be packed on Windows** (`release-nuget.yml` runs on `windows-latest`), or they ship
+without Windows support.
+
+Loading the styles at runtime with `XamlReader.Load` instead was considered and rejected: without compiled
+XAML, the library has no XAML metadata provider, so `local:Segmented` / `local:SegmentedItem` /
+`local:EqualPanel` in the styles can't be resolved at runtime.
+
+### 1.2 NuGet packaging verified
+
+The Windows part of the package is `lib/net10.0-windows10.0.19041/` with the `.dll` and the `.pri`.
+The `.pri` embeds the compiled XAML, and the consuming app merges it into its `resources.pri`, so
+`ms-appx:///Plugin.Maui.SegmentedControl/Platforms/Windows/Themes/SegmentedStyles.xaml` resolves with no
+loose `.xaml`/`.xbf` files.
+
+Tested by building `SegmentedControlSamples` against the packed `.nupkg` from a local feed (unpackaged,
+`WindowsPackageType=None`) and running it: styles, colors and selection render correctly. Also confirmed
+with a copy of the package stripped of `.xaml`/`.xbf` files. **Not tested: MSIX-packaged deployment.**
+
+### 1.3 Startup crash in the handler (found while testing 1.2)
+
+Every app using the control crashed at startup on Windows (`COMException 0x800F0902`, stowed exception
+`0xC000027B`): `MapIsEnabled` replaced an existing entry in `Segmented.Resources`, which WinUI rejects.
+The handler now creates one `SolidColorBrush` per resource key, inserts it once, and afterwards only
+changes its `Color`. It also sets `SegmentedItem.Foreground` and `Segmented.BorderBrush` directly, since
+those come from style setters that never see the per-control overrides.
+
+### 1.4 Version and release metadata
+
+- `PackageVersion` bumped to `2.1.0` (tag `2.0.0` already exists).
+- `PackageReleaseNotes`: "Added Windows (WinUI 3) support."
+- Windows added to the platform table in `README.md`.
+
+## Phase 2: Functional gaps (done)
+
+Verified on Windows by driving `samples/SegmentedControlSamples` through UI Automation (button presses, real
+mouse clicks, UIA selection) with screenshots and an event log. Unpackaged, project reference.
+
+### 2.1 `SelectedSegment` edge cases
+
+- Out-of-range values are ignored instead of throwing; `-1` clears the selection.
+- `ValueChanged` is raised only for values that point at a segment (like Android), so an out-of-range value
+  or `-1` raises nothing. It's raised once per real change (click, UIA selection, or code).
+- A value set before `Children` is filled is applied when the children arrive (`MapChildren` re-applies it).
+
+### 2.2 `SegmentTapped` fires on click
+
+The handler registers for `Tapped` with `handledEventsToo: true` (ListViewItem marks taps handled).
+Verified: a click raises `SegmentTapped` (and `ValueChanged` in `Radio` mode); in `None` mode it raises
+`SegmentTapped` without selecting. Keyboard selection (Space/Enter) still doesn't raise `SegmentTapped`;
+neither does iOS, so this is left as is.
+
+### 2.3 Color changes at runtime
+
+Verified: changing `TintColor`, `TextColor`, `SelectedTextColor` and `DisabledTintColor` while the control is
+shown updates it immediately, including the border and the segments created later by replacing `Children`.
+
+### 2.4 Disabled colors match iOS/Android
+
+- Disabled, unselected segment: `DisabledBackgroundColor` background, `DisabledTextColor` text.
+- Disabled, selected segment: `DisabledTintColor` background, `DisabledTextColor` text (new `DisabledSelected`
+  visual state; `SegmentedItem` uses a custom `VisualStateManager` to route disabled items there, because
+  ListViewItem keeps driving Normal/Selected while disabled).
+- Border while disabled: `DisabledTintColor`.
+- The extra 0.55 opacity on disabled segments is gone, so the configured colors show as set.
+
+**Open decision:** the library defaults are `DisabledBackgroundColor = Gray` and `DisabledTextColor = Gray`, so
+with default colors a disabled unselected segment's text is invisible (gray on gray). Consider a lighter
+default text color, or document it.
+
+### 2.5 Option changes update segments in place
+
+Changing an option's `Text` or `IsEnabled` updates the existing segment (selection and focus are kept).
+Replacing `Children` with a different number of options rebuilds the segments and keeps `SelectedSegment`.
+
+### 2.6 `GroupToggleBehavior` can change at runtime
+
+Switching to `None` clears the visible selection (taps still raise `SegmentTapped`); switching back to
+`Radio` restores `SelectedSegment`.
+
+### 2.7 Sizing follows `HorizontalOptions`
+
+`EqualPanel` (from the Community Toolkit) reported the full available width when stretched, so `Start`,
+`Center` and `End` looked like `Fill`, and its arrange step overwrote the measured item size, which left
+segments in stale positions. It now measures the natural size (widest segment × count) and stretches only
+when arranged. Verified `Fill`, `Start`, `Center`, `End`, and switching back.
+
+### 2.8 Accessibility
+
+- `Segmented` is exposed as a `List` (it was an unnamed `Custom` element) with the Selection pattern.
+- Each segment is a `ListItem` named after its text, with position ("2 of 3"), `IsSelected`, and a working
+  `Select()`; selection changes raise the UIA selection events.
+- Verified with UI Automation. **Not yet tried with Narrator itself.**
+
+## Phase 3: Test plan (Windows)
+
+Run `samples/SegmentedControlSamples` (or `samples/Test.SegmentedControl`) on Windows. Use F5 in
+Visual Studio with the `net10.0-windows10.0.19041.0` target, or:
+
+```powershell
+dotnet build samples\SegmentedControlSamples\SegmentedControlSamples.csproj -f net10.0-windows10.0.19041.0 -t:Run
+```
+
+Checked items were verified by driving the sample through UI Automation (button presses, real mouse clicks
+and key presses, screenshots, event log), unpackaged (`WindowsPackageType=None`), with the project reference
+and again with the packed `.nupkg`.
+
+- [x] Equal-width segments with a border, in the **dark and light** themes
+- [ ] Same in a **high-contrast** theme (needs the Windows setting; not automated)
+- [x] Switching the app theme while running keeps custom colors
+- [x] The starting `SelectedSegment` is shown; clicking a segment updates `SelectedSegment` and raises `ValueChanged` once
+- [x] `SegmentTapped` fires on click, and not for disabled segments (clicking a disabled segment does nothing)
+- [x] Setting `SelectedSegment` from code updates the UI; `-1` clears the selection; an out-of-range value doesn't crash
+- [x] A bound `SelectedSegment` / bound option `Text` / `SegmentTapped` → command round trip (player sample: Play ⇄ STOP)
+- [x] `GroupToggleBehavior="None"` allows no selection but still raises `SegmentTapped`
+- [x] All colors apply at startup and when changed at runtime; pointer-over uses the theme hover fill
+- [ ] Pressed colors (needs a held mouse button; not automated)
+- [x] Disabling the control or a single option looks right and blocks input
+- [x] Changing an option's `Text` at runtime, or replacing `Children`, updates the segments and keeps the selection
+- [x] `FontSize` and `Padding` apply (and change at runtime)
+- [x] Keyboard: arrows move focus, Space/Enter select, the last segment stops, a disabled neighbour is skipped
+  without trapping focus (Tab leaves the control), arrows are reversed in `FlowDirection="RightToLeft"`
+- [ ] Narrator reads each segment's text, "n of m" and selection state (the UIA data is verified: names,
+  positions, `IsSelected`, `Select()`; listening with Narrator isn't automated)
+- [x] Remove the control and add it back, and navigate between tabs: no crash, selection kept, events still fire
+- [x] Key checks repeated with the **packed `.nupkg`** (local feed)
+- [ ] MSIX-packaged app (only unpackaged was tested)
+
+Notes:
+
+- A click that has to activate the window first selects the segment but doesn't raise `SegmentTapped`
+  (WinUI doesn't raise `Tapped` for an activation click). Seen once in testing; normal WinUI behaviour.
+- Found and fixed in the sample: `SegControlTest2.xaml`'s `EventToCommandBehavior` had no `BindingContext`
+  (toolkit behaviors don't inherit it), so the Play/STOP command never ran on any platform.
+
+## Phase 4: Clean-up (done)
+
+- Deleted `Platforms/Windows/Themes/Generic.xaml` (unused) and the leftover template
+  `Plugin.Maui.SegmentedControl.nuspec` (the build generates its own).
+- The styles are no longer merged in `UseSegmentedControl()`, which added them again on every call and needed
+  `Application.Current` to exist at startup. `SegmentedResources.EnsureLoaded()` merges them on first use by
+  the handler and skips it when they're already merged. Verified: merged once after repeated tab switches.
+- The duplicated padding conversion was already replaced by one `ToItemPadding` helper in phase 1.
+- Added `THIRD-PARTY-NOTICES.md` with the Windows Community Toolkit MIT notice, packed into the `.nupkg`.
+
+Still open (needs a decision, see 2.4): the default `DisabledTextColor` and `DisabledBackgroundColor` are
+both gray, so a disabled segment's text is invisible with default colors.
+
+## Phase 5: Release
+
+1. Merge the branch into `main` (the workflow refuses commits that aren't on `origin/main`).
+2. Tag `v<version>` (e.g. `v2.1.0`) and push the tag. `.github/workflows/release-nuget.yml` packs on `windows-latest` and pushes to nuget.org.
+3. Check the published package on nuget.org lists `net10.0-windows10.0.19041.0` under Frameworks.

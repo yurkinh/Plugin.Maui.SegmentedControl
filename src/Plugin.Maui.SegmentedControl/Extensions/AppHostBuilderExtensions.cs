@@ -5,7 +5,7 @@ namespace Plugin.Maui.SegmentedControl;
 public static class AppHostBuilderExtensions
 {
     /// <summary>
-    /// Configures the SimpleToolkit.Core package.
+    /// Configures the Plugin.Maui.SegmentedControl package.
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
@@ -13,10 +13,13 @@ public static class AppHostBuilderExtensions
     {
         builder.ConfigureMauiHandlers(handlers =>
         {
-            handlers.AddHandler<SegmentedControl, SegmentedControlHandler>();                
+            handlers.AddHandler<SegmentedControl, SegmentedControlHandler>();
         });
+
+        // Windows: the WinUI styles are merged by the handler on first use (SegmentedResources.EnsureLoaded).
 
         return builder;
     }
 }
+
 

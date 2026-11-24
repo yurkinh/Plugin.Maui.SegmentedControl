@@ -1,0 +1,172 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// Extracted from https://github.com/CommunityToolkit/Windows (MIT License)
+#if WINDOWS
+#nullable enable
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Windows.System;
+
+namespace Plugin.Maui.SegmentedControl.Windows;
+
+/// <summary>
+/// A control that displays a set of items that can be selected by the user.
+/// </summary>
+public partial class Segmented : ListViewBase
+{
+    int internalSelectedIndex = -1;
+    bool hasLoaded = false;
+
+    /// <summary>
+    /// Creates a new instance of <see cref="Segmented"/>.
+    /// </summary>
+    public Segmented()
+    {
+        this.DefaultStyleKey = typeof(Segmented);
+
+        RegisterPropertyChangedCallback(SelectedIndexProperty, OnSelectedIndexChanged);
+        RegisterPropertyChangedCallback(OrientationProperty, OnOrientationPropertyChanged);
+    }
+
+    /// <inheritdoc/>
+    protected override DependencyObject GetContainerForItemOverride() => new SegmentedItem();
+
+    /// <inheritdoc/>
+    protected override Microsoft.UI.Xaml.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+        => new SegmentedAutomationPeer(this);
+
+    /// <summary>
+    /// Without a peer, ListViewBase shows up in UI Automation as an unnamed "Custom" element, so Narrator doesn't
+    /// announce the segments as a list. Expose it as a List. (ListViewBaseAutomationPeer would hide the items:
+    /// it exposes no children for this control. FrameworkElementAutomationPeer keeps the item peers.)
+    /// </summary>
+    sealed class SegmentedAutomationPeer(Segmented owner)
+        : Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer(owner),
+          Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
+    {
+        Segmented Segmented => (Segmented)Owner;
+
+        protected override Microsoft.UI.Xaml.Automation.Peers.AutomationControlType GetAutomationControlTypeCore()
+            => Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.List;
+
+        protected override string GetClassNameCore() => nameof(Segmented);
+
+        protected override object? GetPatternCore(Microsoft.UI.Xaml.Automation.Peers.PatternInterface patternInterface)
+            => patternInterface == Microsoft.UI.Xaml.Automation.Peers.PatternInterface.Selection ? this : base.GetPatternCore(patternInterface);
+
+        public bool CanSelectMultiple => false;
+
+        public bool IsSelectionRequired => false;
+
+        public Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
+            => Segmented.ContainerFromIndex(Segmented.SelectedIndex) is SegmentedItem item && FromElement(item) is { } peer
+                ? [ProviderFromPeer(peer)]
+                : [];
+    }
+
+    /// <inheritdoc/>
+    protected override bool IsItemItsOwnContainerOverride(object item)
+        => item is SegmentedItem;
+
+    /// <inheritdoc/>
+    protected override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+
+        if (!hasLoaded)
+        {
+            SelectedIndex = -1;
+            SelectedIndex = internalSelectedIndex;
+            hasLoaded = true;
+        }
+
+        PreviewKeyDown -= Segmented_PreviewKeyDown;
+        PreviewKeyDown += Segmented_PreviewKeyDown;
+    }
+
+    /// <inheritdoc/>
+    protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+    {
+        base.PrepareContainerForItemOverride(element, item);
+
+        if (element is SegmentedItem segmentedItem)
+        {
+            segmentedItem.UpdateOrientation(Orientation);
+        }
+    }
+
+    void Segmented_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        var dir = e.Key switch
+        {
+            VirtualKey.Left when FlowDirection is Microsoft.UI.Xaml.FlowDirection.RightToLeft => 1,
+            VirtualKey.Right when FlowDirection is Microsoft.UI.Xaml.FlowDirection.RightToLeft => -1,
+            VirtualKey.Left or VirtualKey.Up => -1,
+            VirtualKey.Right or VirtualKey.Down => 1,
+            _ => 0,
+        };
+
+        if (dir is not 0)
+        {
+            e.Handled = MoveFocus(dir);
+        }
+    }
+
+    bool MoveFocus(int adjustment)
+    {
+        if (Items.Count is 0)
+        {
+            return false;
+        }
+
+        var currentContainerItem = GetCurrentContainerItem();
+        if (currentContainerItem is null)
+        {
+            return false;
+        }
+
+        var currentItem = ItemFromContainer(currentContainerItem);
+        var previousIndex = Items.IndexOf(currentItem);
+        var index = Math.Clamp(previousIndex + adjustment, 0, Items.Count - 1);
+
+        if (index == previousIndex || ContainerFromIndex(index) is not SegmentedItem newItem)
+        {
+            return false;
+        }
+
+        return newItem.Focus(FocusState.Keyboard);
+    }
+
+    SegmentedItem? GetCurrentContainerItem()
+    {
+        if (XamlRoot is not null)
+        {
+            return FocusManager.GetFocusedElement(XamlRoot) as SegmentedItem;
+        }
+
+        return FocusManager.GetFocusedElement() as SegmentedItem;
+    }
+
+    void OnSelectedIndexChanged(DependencyObject sender, DependencyProperty dp)
+    {
+        // Workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/8257
+        if (internalSelectedIndex == -1 && SelectedIndex > -1)
+        {
+            internalSelectedIndex = SelectedIndex;
+        }
+    }
+
+    void OnOrientationPropertyChanged(DependencyObject sender, DependencyProperty dp)
+    {
+        for (int i = 0; i < Items.Count; i++)
+        {
+            if (ContainerFromIndex(i) is SegmentedItem item)
+            {
+                item.UpdateOrientation(Orientation);
+            }
+        }
+    }
+}
+#endif
