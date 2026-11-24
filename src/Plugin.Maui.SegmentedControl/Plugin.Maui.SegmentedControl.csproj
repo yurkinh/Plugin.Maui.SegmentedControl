@@ -95,6 +95,7 @@
 	<ItemGroup>
 		<None Include="..\..\nuget.png" PackagePath="nuget.png" Pack="true" />
 		<None Include="..\..\README.md" PackagePath="README.md" Pack="true" />
+		<None Include="..\..\THIRD-PARTY-NOTICES.md" PackagePath="THIRD-PARTY-NOTICES.md" Pack="true" />
 	</ItemGroup>
 	<!-- Windows: the package only needs the .dll and .pri. The .pri embeds the compiled XAML, and consuming apps merge it
 	     into their resources.pri, so ms-appx:///Plugin.Maui.SegmentedControl/... resolves without loose .xaml/.xbf files. -->

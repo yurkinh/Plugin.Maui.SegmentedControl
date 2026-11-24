@@ -13,15 +13,10 @@ public static class AppHostBuilderExtensions
     {
         builder.ConfigureMauiHandlers(handlers =>
         {
-            handlers.AddHandler<SegmentedControl, SegmentedControlHandler>();                
+            handlers.AddHandler<SegmentedControl, SegmentedControlHandler>();
         });
 
-#if WINDOWS
-        // Merge WinUI3 styles for the extracted Segmented control so DefaultStyleKey resolves correctly
-        var resourceDict = new Microsoft.UI.Xaml.ResourceDictionary();
-        resourceDict.Source = new Uri("ms-appx:///Plugin.Maui.SegmentedControl/Platforms/Windows/Themes/SegmentedStyles.xaml");
-        Microsoft.UI.Xaml.Application.Current?.Resources?.MergedDictionaries?.Add(resourceDict);
-#endif
+        // Windows: the WinUI styles are merged by the handler on first use (SegmentedResources.EnsureLoaded).
 
         return builder;
     }

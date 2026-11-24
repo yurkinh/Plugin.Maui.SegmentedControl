@@ -53,6 +53,8 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
 
     protected override Segmented CreatePlatformView()
     {
+        SegmentedResources.EnsureLoaded();
+
         var segmented = new Segmented
         {
             SelectionMode = ToSelectionMode(VirtualView.GroupToggleBehavior),

@@ -12,8 +12,9 @@ Work through the phases below in order on a Windows machine.
 | `src/Plugin.Maui.SegmentedControl/Platforms/Windows/SegmentedControlHandler.cs` | MAUI handler that maps `SegmentedControl` onto the native `Segmented` control |
 | `.../Platforms/Windows/NativeSegmented/Segmented*.cs`, `SegmentedItem*.cs`, `EqualPanel.cs` | Copy of the CommunityToolkit/Windows `Segmented` control (MIT) |
 | `.../Platforms/Windows/Themes/SegmentedStyles.xaml` | Styles, control templates, and the theme resource keys the handler overrides |
-| `.../Platforms/Windows/Themes/Generic.xaml` | Merges `SegmentedStyles.xaml` (not used at the moment, see phase 4) |
-| `.../Extensions/AppHostBuilderExtensions.cs` | `UseSegmentedControl()` merges `SegmentedStyles.xaml` into `Application.Current.Resources` on Windows |
+| `.../Platforms/Windows/NativeSegmented/SegmentedResources.cs` | Merges `SegmentedStyles.xaml` into the application resources once, on first use by the handler |
+| `.../Extensions/AppHostBuilderExtensions.cs` | `UseSegmentedControl()` registers the handler |
+| `THIRD-PARTY-NOTICES.md` | MIT notice for the Community Toolkit code (also packed into the `.nupkg`) |
 | `Plugin.Maui.SegmentedControl.csproj` | Adds `net10.0-windows10.0.19041.0` |
 
 How the handler maps the control's properties:
@@ -196,15 +197,18 @@ Notes:
 - Found and fixed in the sample: `SegControlTest2.xaml`'s `EventToCommandBehavior` had no `BindingContext`
   (toolkit behaviors don't inherit it), so the Play/STOP command never ran on any platform.
 
-## Phase 4: Minor clean-up
+## Phase 4: Clean-up (done)
 
-- `Platforms/Windows/Themes/Generic.xaml` isn't used: WinUI only finds it automatically at `Themes/Generic.xaml`,
-  and `UseSegmentedControl()` merges the styles itself. Delete it or move it there.
-- `UseSegmentedControl()` merges the dictionary again on every call; skip it if it's already merged.
-  `Application.Current` may also be `null` at builder time; consider merging lazily on first `CreatePlatformView`.
-- `GetItemPadding()` and `MapPadding` duplicate the padding conversion; share one helper.
-- `Plugin.Maui.SegmentedControl.nuspec` is a leftover template the build doesn't use; delete it.
-- Consider a `THIRD-PARTY-NOTICES.md` crediting CommunityToolkit/Windows (MIT); the copied files already have headers.
+- Deleted `Platforms/Windows/Themes/Generic.xaml` (unused) and the leftover template
+  `Plugin.Maui.SegmentedControl.nuspec` (the build generates its own).
+- The styles are no longer merged in `UseSegmentedControl()`, which added them again on every call and needed
+  `Application.Current` to exist at startup. `SegmentedResources.EnsureLoaded()` merges them on first use by
+  the handler and skips it when they're already merged. Verified: merged once after repeated tab switches.
+- The duplicated padding conversion was already replaced by one `ToItemPadding` helper in phase 1.
+- Added `THIRD-PARTY-NOTICES.md` with the Windows Community Toolkit MIT notice, packed into the `.nupkg`.
+
+Still open (needs a decision, see 2.4): the default `DisabledTextColor` and `DisabledBackgroundColor` are
+both gray, so a disabled segment's text is invisible with default colors.
 
 ## Phase 5: Release
 
