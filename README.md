@@ -11,6 +11,7 @@
 |iOS Unified|Yes|iOS 8.1+|UISegmentedControl|
 |Android|Yes|API 18+|RadioGroup|
 |Mac OS  |Yes| 11.0+|UISegmentedControl|
+|Windows|Yes|10.0.19041+|WinUI 3 Segmented (Community Toolkit port)|
 
 ### Screenshot
 ![Screenshot](https://github.com/yurkinh/Plugin.Maui.SegmentedControl/assets/17849938/d184c9a2-093c-4bc9-8546-35dfe0c5de87)

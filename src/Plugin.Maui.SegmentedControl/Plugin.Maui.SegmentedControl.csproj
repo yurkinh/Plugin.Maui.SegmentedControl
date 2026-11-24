@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst;net10.0-windows10.0.19041.0</TargetFrameworks>
-		<!-- EnableWindowsTargeting allows the Windows TFM to be compiled on non-Windows hosts (macOS/Linux CI) -->
-		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+		<TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+		<!-- The WinUI XAML compiler only runs on Windows, so the Windows TFM is built (and packed) on Windows only.
+		     Release packages must be packed on Windows (release-nuget.yml runs on windows-latest). -->
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>		
@@ -21,7 +22,7 @@
 		<Authors>yurkinh</Authors>
 		<Copyright>Copyright © yurkinh and contributors</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageVersion>2.0.0</PackageVersion>
+		<PackageVersion>2.1.0</PackageVersion>
 		<IsPackable>True</IsPackable>
 		<PackageProjectUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/yurkinh/Plugin.Maui.SegmentedControl</RepositoryUrl>
@@ -37,7 +38,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<DebugType>portable</DebugType>
 		<PackageIcon>nuget.png</PackageIcon>
-		<PackageReleaseNotes>Updated to .net 10</PackageReleaseNotes>
+		<PackageReleaseNotes>Added Windows (WinUI 3) support.</PackageReleaseNotes>
 	</PropertyGroup>
 
 
@@ -95,4 +96,6 @@
 		<None Include="..\..\nuget.png" PackagePath="nuget.png" Pack="true" />
 		<None Include="..\..\README.md" PackagePath="README.md" Pack="true" />
 	</ItemGroup>
+	<!-- Windows: the package only needs the .dll and .pri. The .pri embeds the compiled XAML, and consuming apps merge it
+	     into their resources.pri, so ms-appx:///Plugin.Maui.SegmentedControl/... resolves without loose .xaml/.xbf files. -->
 </Project>

@@ -37,7 +37,7 @@ All review threads on PR #23 are addressed. The last round also fixed the Window
 - [x] The XAML compiler failed silently (`XamlCompiler.exe exited with code 1`). The MAUI SDK already
   includes `Platforms\Windows\**\*.xaml` as WinUI `Page` items, and the explicit `<Page Include>` items
   in the csproj passed each file a second time. Removed the explicit items.
-- [x] `MapTextColor` lost its closing brace in `de508c4`. Restored it, and `ApplyColors` now also sets
+- [x] `MapTextColor` lost its closing brace in `de508c4`. Restored it, and `TextColor` now also drives
   `ButtonItemForegroundPressed` (review: *Apply configured pressed foreground resource*).
 - [x] `FlowDirection is FlowDirection.RightToLeft` in `Segmented.cs` didn't compile (CS0176: the name
   resolved to the instance property). Qualified as `Microsoft.UI.Xaml.FlowDirection.RightToLeft`.
@@ -48,77 +48,61 @@ All review threads on PR #23 are addressed. The last round also fixed the Window
   missing `IconTop`/`Horizontal`/`Vertical` states, field renames in `EqualPanel`/`Segmented`/`SegmentedItem`.
 
 Verified on Windows: the library builds for `net10.0-windows10.0.19041.0`, `net10.0`, `net10.0-android`
-with 0 warnings and 0 errors, and `samples/SegmentedControlSamples` builds for Windows. The output contains
-`SegmentedStyles.xbf` and `Plugin.Maui.SegmentedControl.pri`. **Not yet run or tested in an app.**
+with 0 warnings and 0 errors, and `samples/SegmentedControlSamples` builds for Windows. Running it is covered in phase 1.
 
-## Phase 1: Build and packaging blockers
+## Phase 1: Build and packaging blockers (done)
 
-### 1.1 The library doesn't build on macOS or Linux
+### 1.1 Builds on macOS and Linux again
 
-The WinUI XAML compiler (`XamlCompiler.exe`) only runs on Windows. With the Windows TFM listed
-unconditionally, `dotnet build` and `dotnet pack` of the library fail on a Mac (exit code 126).
-`EnableWindowsTargeting` doesn't help for projects that contain XAML pages.
+The WinUI XAML compiler (`XamlCompiler.exe`) only runs on Windows, so the Windows TFM is now added only
+when building on Windows, and `EnableWindowsTargeting` is gone:
 
-Pick one:
-
-- **Quick fix:** add the Windows TFM only on Windows (the sample projects already do this) and
-  remove `EnableWindowsTargeting`:
-
-  ```xml
-  <TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
-  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
-  ```
-
-  The release workflow runs on `windows-latest`, so the published package still includes Windows.
-  The catch: you have to pack on Windows, or the package ships without Windows support.
-
-- **Better fix (recommended):** stop compiling XAML. Make `SegmentedStyles.xaml` an `EmbeddedResource`
-  (and exclude it from `Page`), then load it at runtime with `Microsoft.UI.Xaml.Markup.XamlReader.Load(...)`
-  in `UseSegmentedControl()`. This needs no XAML compiler, builds anywhere, and also removes the
-  `ms-appx`/`.pri` dependency in 1.2.
-
-### 1.2 Check the NuGet packaging
-
-The styles load from `ms-appx:///Plugin.Maui.SegmentedControl/Platforms/Windows/Themes/SegmentedStyles.xaml`.
-That works with a `ProjectReference`. When the library comes from a NuGet package, the `.xbf` and `.pri`
-files must be inside the `.nupkg`, or the app fails when it merges the dictionary. (Skip this if you picked
-the embedded-resource fix above.) Check (PowerShell):
-
-```powershell
-dotnet pack src\Plugin.Maui.SegmentedControl\Plugin.Maui.SegmentedControl.csproj -c Release -o .\artifacts
-tar -tf .\artifacts\Plugin.Maui.SegmentedControl.<version>.nupkg | findstr /i "windows"
+```xml
+<TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 ```
 
-Expect files under `lib/net10.0-windows10.0.19041.0/`: the `.dll`, a `.pri`, and the
-`SegmentedStyles.xbf`. If they're missing, try `<GenerateLibraryLayout>true</GenerateLibraryLayout>`
-for the Windows TFM.
+**Release packages must be packed on Windows** (`release-nuget.yml` runs on `windows-latest`), or they ship
+without Windows support.
 
-Then test the package for real: in a sample, temporarily replace the `ProjectReference` with a
-`PackageReference` to the local `.\artifacts` feed, run it, and confirm the control shows up with its styles.
+Loading the styles at runtime with `XamlReader.Load` instead was considered and rejected: without compiled
+XAML, the library has no XAML metadata provider, so `local:Segmented` / `local:SegmentedItem` /
+`local:EqualPanel` in the styles can't be resolved at runtime.
 
-### 1.3 Version and release metadata
+### 1.2 NuGet packaging verified
 
-- `PackageVersion` is still `2.0.0`, and tag `2.0.0` already exists. The release workflow pushes with
-  `--skip-duplicate`, so publishing would silently do nothing. Bump it (suggested: `2.1.0`).
-- Update `PackageReleaseNotes` (currently "Updated to .net 10").
-- Add Windows to the platform table in `README.md`:
-  `|Windows|Yes|10.0.19041+|WinUI 3 Segmented (Community Toolkit port)|`
+The Windows part of the package is `lib/net10.0-windows10.0.19041/` with the `.dll` and the `.pri`.
+The `.pri` embeds the compiled XAML, and the consuming app merges it into its `resources.pri`, so
+`ms-appx:///Plugin.Maui.SegmentedControl/Platforms/Windows/Themes/SegmentedStyles.xaml` resolves with no
+loose `.xaml`/`.xbf` files.
+
+Tested by building `SegmentedControlSamples` against the packed `.nupkg` from a local feed (unpackaged,
+`WindowsPackageType=None`) and running it: styles, colors and selection render correctly. Also confirmed
+with a copy of the package stripped of `.xaml`/`.xbf` files. **Not tested: MSIX-packaged deployment.**
+
+### 1.3 Startup crash in the handler (found while testing 1.2)
+
+Every app using the control crashed at startup on Windows (`COMException 0x800F0902`, stowed exception
+`0xC000027B`): `MapIsEnabled` replaced an existing entry in `Segmented.Resources`, which WinUI rejects.
+The handler now creates one `SolidColorBrush` per resource key, inserts it once, and afterwards only
+changes its `Color`. It also sets `SegmentedItem.Foreground` and `Segmented.BorderBrush` directly, since
+those come from style setters that never see the per-control overrides.
+
+### 1.4 Version and release metadata
+
+- `PackageVersion` bumped to `2.1.0` (tag `2.0.0` already exists).
+- `PackageReleaseNotes`: "Added Windows (WinUI 3) support."
+- Windows added to the platform table in `README.md`.
 
 ## Phase 2: Functional gaps (implement, then verify on Windows)
 
-### 2.1 Out-of-range `SelectedSegment` throws
+### 2.1 `SelectedSegment` edge cases
 
-`CreatePlatformView` and `MapSelectedSegment` set `SelectedIndex` without a range check. If a binding
-sets `SelectedSegment` before `Children` is filled, WinUI throws. Guard it the way Android does:
-
-```csharp
-var index = control.SelectedSegment;
-if (index < -1 || index >= handler.PlatformView.Items.Count)
-    return;
-```
-
-`MapSelectedSegment` also raises `ValueChanged` even when nothing changed on the native side. Only raise it
-when the value actually changes, to match iOS/Android.
+- [x] Out-of-range values are ignored instead of throwing (`ApplySelectedSegment` checks the range), done in phase 1.
+- [ ] `MapSelectedSegment` raises `ValueChanged` even when nothing changed on the native side. Only raise it
+  when the value actually changes, to match iOS/Android.
+- [ ] A `SelectedSegment` set before `Children` is filled is currently ignored. Check it gets applied once the
+  children arrive (`MapChildren` re-applies it, so it probably works; verify).
 
 ### 2.2 `SegmentTapped` may never fire
 
@@ -148,20 +132,14 @@ protected override void DisconnectHandler(Segmented platformView)
 Keyboard selection (Space/Enter) doesn't raise `SegmentTapped`. Decide whether it should (iOS raises it
 for every selection, so probably yes).
 
-### 2.3 Changing colors at runtime probably doesn't update the control
+### 2.3 Verify color changes at runtime
 
-The `Map*Color` methods replace entries in `segmented.Resources`. WinUI resolves `{ThemeResource}` values
-when the template is applied and only refreshes them when the theme changes. So the starting colors work,
-but changing them after the control is shown probably won't. Two values likely ignore the overrides
-altogether, because they come from Style setters, which look up resources where the style is defined:
-
-- an unselected item's `Foreground` (`ButtonItemForeground`)
-- the control's `BorderBrush` (`SegmentedBorderBrush`)
-
-Test first. If it's broken, set `item.Foreground` and `segmented.BorderBrush` directly, and for the
-state colors either rebuild the items (`BuildItems`) after a color change or re-run
-`VisualStateManager.GoToState` on each item. A cheaper alternative: keep one `SolidColorBrush` instance per
-key and change its `.Color` instead of replacing the brush, since bound brushes update live.
+The phase 1 handler fix keeps one brush per resource key and only changes its `Color`, and sets the unselected
+`Foreground` and the `BorderBrush` directly. Starting colors are verified. Changes after the control is shown
+should update live, but that's **not tested yet**: use the sample's "Tint Color Change", "Text Color",
+"Change Selected Text Color" and "Change Disabled Tint Color" buttons, including while hovering and pressing.
+Also check that setting a color to `null` keeps the previous color (current behavior) and decide whether it
+should fall back to the theme instead.
 
 ### 2.4 `DisabledTintColor` behaves differently from iOS
 
