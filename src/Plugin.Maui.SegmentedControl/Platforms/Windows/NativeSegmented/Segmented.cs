@@ -34,6 +34,39 @@ public partial class Segmented : ListViewBase
     protected override DependencyObject GetContainerForItemOverride() => new SegmentedItem();
 
     /// <inheritdoc/>
+    protected override Microsoft.UI.Xaml.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+        => new SegmentedAutomationPeer(this);
+
+    /// <summary>
+    /// Without a peer, ListViewBase shows up in UI Automation as an unnamed "Custom" element, so Narrator doesn't
+    /// announce the segments as a list. Expose it as a List. (ListViewBaseAutomationPeer would hide the items:
+    /// it exposes no children for this control. FrameworkElementAutomationPeer keeps the item peers.)
+    /// </summary>
+    sealed class SegmentedAutomationPeer(Segmented owner)
+        : Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer(owner),
+          Microsoft.UI.Xaml.Automation.Provider.ISelectionProvider
+    {
+        Segmented Segmented => (Segmented)Owner;
+
+        protected override Microsoft.UI.Xaml.Automation.Peers.AutomationControlType GetAutomationControlTypeCore()
+            => Microsoft.UI.Xaml.Automation.Peers.AutomationControlType.List;
+
+        protected override string GetClassNameCore() => nameof(Segmented);
+
+        protected override object? GetPatternCore(Microsoft.UI.Xaml.Automation.Peers.PatternInterface patternInterface)
+            => patternInterface == Microsoft.UI.Xaml.Automation.Peers.PatternInterface.Selection ? this : base.GetPatternCore(patternInterface);
+
+        public bool CanSelectMultiple => false;
+
+        public bool IsSelectionRequired => false;
+
+        public Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetSelection()
+            => Segmented.ContainerFromIndex(Segmented.SelectedIndex) is SegmentedItem item && FromElement(item) is { } peer
+                ? [ProviderFromPeer(peer)]
+                : [];
+    }
+
+    /// <inheritdoc/>
     protected override bool IsItemItsOwnContainerOverride(object item)
         => item is SegmentedItem;
 

@@ -17,7 +17,10 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
     static readonly string[] TextKeys = ["ButtonItemForeground", "ButtonItemForegroundPointerOver", "ButtonItemForegroundPressed"];
     const string DisabledTextKey = "ButtonItemForegroundDisabled";
     const string DisabledBackgroundKey = "ButtonItemBackgroundDisabled";
+    const string DisabledSelectedBackgroundKey = "ButtonItemBackgroundDisabledSelected";
     const string BorderKey = "SegmentedBorderBrush";
+
+    Microsoft.UI.Xaml.Input.TappedEventHandler? tappedHandler;
 
     // One brush per resource key. Each brush is inserted into PlatformView.Resources once and afterwards only its
     // Color changes: WinUI throws (0x800F0902) when an existing entry is replaced, and bound brushes update live.
@@ -28,6 +31,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
         {
             [nameof(SegmentedControl.IsEnabled)] = MapIsEnabled,
             [nameof(SegmentedControl.SelectedSegment)] = MapSelectedSegment,
+            [nameof(SegmentedControl.GroupToggleBehavior)] = MapGroupToggleBehavior,
             [nameof(SegmentedControl.TintColor)] = MapTintColor,
             [nameof(SegmentedControl.SelectedTextColor)] = MapSelectedTextColor,
             [nameof(SegmentedControl.TextColor)] = MapTextColor,
@@ -51,9 +55,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
     {
         var segmented = new Segmented
         {
-            SelectionMode = VirtualView.GroupToggleBehavior == GroupToggleBehavior.Radio
-                ? WinListViewSelectionMode.Single
-                : WinListViewSelectionMode.None,
+            SelectionMode = ToSelectionMode(VirtualView.GroupToggleBehavior),
             HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
         };
 
@@ -67,15 +69,26 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
     {
         base.ConnectHandler(platformView);
         platformView.SelectionChanged += OnSelectionChanged;
-        platformView.Tapped += OnTapped;
+
+        // ListViewItem marks Tapped as handled, so a plain "Tapped +=" subscription is never called.
+        tappedHandler = OnTapped;
+        platformView.AddHandler(Microsoft.UI.Xaml.UIElement.TappedEvent, tappedHandler, handledEventsToo: true);
     }
 
     protected override void DisconnectHandler(Segmented platformView)
     {
         platformView.SelectionChanged -= OnSelectionChanged;
-        platformView.Tapped -= OnTapped;
+        if (tappedHandler is not null)
+        {
+            platformView.RemoveHandler(Microsoft.UI.Xaml.UIElement.TappedEvent, tappedHandler);
+            tappedHandler = null;
+        }
+
         base.DisconnectHandler(platformView);
     }
+
+    static WinListViewSelectionMode ToSelectionMode(GroupToggleBehavior behavior)
+        => behavior == GroupToggleBehavior.Radio ? WinListViewSelectionMode.Single : WinListViewSelectionMode.None;
 
     void OnSelectionChanged(object sender, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs e)
     {
@@ -145,11 +158,10 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
         {
             var item = new SegmentedItem
             {
-                Content = child.Text,
-                IsEnabled = VirtualView.IsEnabled && child.IsEnabled,
                 FontSize = VirtualView.FontSize,
                 Padding = ToItemPadding(VirtualView.Padding),
             };
+            UpdateItem(item, child);
 
             // The style's Foreground setter resolves ButtonItemForeground where the style is defined, so it never
             // sees this control's override. Set it locally; the visual states still animate the content presenter.
@@ -160,6 +172,19 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
 
             segmented.Items.Add(item);
         }
+    }
+
+    void UpdateItem(SegmentedItem item, SegmentedControlOption child)
+    {
+        var text = child.Text ?? string.Empty;
+        if (!Equals(item.Content, text))
+        {
+            item.Content = text;
+        }
+
+        // Narrator reads the segment's text; selection state and "n of m" come from the ListViewItem peer.
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(item, text);
+        item.IsEnabled = VirtualView.IsEnabled && child.IsEnabled;
     }
 
     static Microsoft.UI.Xaml.Thickness ToItemPadding(Thickness padding)
@@ -254,7 +279,25 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
         }
 
         ApplySelectedSegment(handler.PlatformView, control);
-        control.SendValueChanged();
+
+        // Like Android: only report values that point at a segment (not -1, not out of range).
+        if (control.SelectedSegment >= 0 && control.SelectedSegment < handler.PlatformView.Items.Count)
+        {
+            control.SendValueChanged();
+        }
+    }
+
+    static void MapGroupToggleBehavior(SegmentedControlHandler handler, SegmentedControl control)
+    {
+        var mode = ToSelectionMode(control.GroupToggleBehavior);
+        if (handler.PlatformView.SelectionMode == mode)
+        {
+            return;
+        }
+
+        // Switching to None clears the native selection; switching back restores SelectedSegment.
+        handler.PlatformView.SelectionMode = mode;
+        ApplySelectedSegment(handler.PlatformView, control);
     }
 
     static void MapTintColor(SegmentedControlHandler handler, SegmentedControl control)
@@ -288,7 +331,11 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
         => handler.SetBrush(DisabledTextKey, control.DisabledTextColor);
 
     static void MapDisabledTintColor(SegmentedControlHandler handler, SegmentedControl control)
-        => handler.UpdateBorder();
+    {
+        // Like iOS/Android: DisabledTintColor is the selected segment's color (and the border) while disabled.
+        handler.SetBrush(DisabledSelectedBackgroundKey, control.DisabledTintColor);
+        handler.UpdateBorder();
+    }
 
     static void MapFontSize(SegmentedControlHandler handler, SegmentedControl control)
     {
@@ -309,7 +356,26 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, Segmented>
 
     static void MapChildren(SegmentedControlHandler handler, SegmentedControl control)
     {
-        handler.BuildItems(handler.PlatformView);
+        var children = control.Children;
+        var items = handler.PlatformView.Items;
+
+        // An option's Text/IsEnabled change re-maps Children. Update the existing items in place when the count
+        // is unchanged, so focus and selection survive; rebuild only when segments were added or removed.
+        if (children is not null && children.Count == items.Count && children.Count > 0)
+        {
+            for (int i = 0; i < children.Count; i++)
+            {
+                if (items[i] is SegmentedItem item)
+                {
+                    handler.UpdateItem(item, children[i]);
+                }
+            }
+        }
+        else
+        {
+            handler.BuildItems(handler.PlatformView);
+        }
+
         ApplySelectedSegment(handler.PlatformView, control);
     }
 }

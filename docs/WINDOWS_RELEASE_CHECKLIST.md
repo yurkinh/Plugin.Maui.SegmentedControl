@@ -20,15 +20,15 @@ How the handler maps the control's properties:
 
 | `SegmentedControl` property | Windows behavior |
 | --- | --- |
-| `Children` | Rebuilds `SegmentedItem`s with the option's `Text` and `IsEnabled` |
-| `SelectedSegment` | Sets `Segmented.SelectedIndex`, raises `ValueChanged` |
-| `GroupToggleBehavior` | `Radio` → `SelectionMode.Single`; `None` → `SelectionMode.None` (only read when the control is created) |
+| `Children` | Updates segments in place when the count is unchanged; otherwise rebuilds them |
+| `SelectedSegment` | Sets `Segmented.SelectedIndex` (out of range is ignored), raises `ValueChanged` for valid indexes |
+| `GroupToggleBehavior` | `Radio` → `SelectionMode.Single`; `None` → `SelectionMode.None` (can change at runtime) |
 | `TintColor` | Background of the selected item; border while the control is enabled |
 | `SelectedTextColor` / `TextColor` | Text color of the selected item / of unselected items (normal, pointer-over, pressed) |
 | `DisabledBackgroundColor` / `DisabledTextColor` | Background / text color of disabled items |
-| `DisabledTintColor` | Border color while the control is disabled |
+| `DisabledTintColor` | Background of the selected item and the border while disabled |
 | `FontSize`, `Padding` | Applied to each item (a `Padding` of 0 falls back to 11) |
-| `SegmentTapped` | Raised from the `Tapped` event on `Segmented` |
+| `SegmentTapped` | Raised on click/tap, also in `None` mode |
 
 ## Done: PR review findings and build fixes
 
@@ -94,87 +94,66 @@ those come from style setters that never see the per-control overrides.
 - `PackageReleaseNotes`: "Added Windows (WinUI 3) support."
 - Windows added to the platform table in `README.md`.
 
-## Phase 2: Functional gaps (implement, then verify on Windows)
+## Phase 2: Functional gaps (done)
+
+Verified on Windows by driving `samples/SegmentedControlSamples` through UI Automation (button presses, real
+mouse clicks, UIA selection) with screenshots and an event log. Unpackaged, project reference.
 
 ### 2.1 `SelectedSegment` edge cases
 
-- [x] Out-of-range values are ignored instead of throwing (`ApplySelectedSegment` checks the range), done in phase 1.
-- [ ] `MapSelectedSegment` raises `ValueChanged` even when nothing changed on the native side. Only raise it
-  when the value actually changes, to match iOS/Android.
-- [ ] A `SelectedSegment` set before `Children` is filled is currently ignored. Check it gets applied once the
-  children arrive (`MapChildren` re-applies it, so it probably works; verify).
+- Out-of-range values are ignored instead of throwing; `-1` clears the selection.
+- `ValueChanged` is raised only for values that point at a segment (like Android), so an out-of-range value
+  or `-1` raises nothing. It's raised once per real change (click, UIA selection, or code).
+- A value set before `Children` is filled is applied when the children arrive (`MapChildren` re-applies it).
 
-### 2.2 `SegmentTapped` may never fire
+### 2.2 `SegmentTapped` fires on click
 
-`ListViewItem` usually marks `Tapped` as handled, so a plain `+=` subscription may never get called.
-Register for handled events too:
+The handler registers for `Tapped` with `handledEventsToo: true` (ListViewItem marks taps handled).
+Verified: a click raises `SegmentTapped` (and `ValueChanged` in `Radio` mode); in `None` mode it raises
+`SegmentTapped` without selecting. Keyboard selection (Space/Enter) still doesn't raise `SegmentTapped`;
+neither does iOS, so this is left as is.
 
-```csharp
-Microsoft.UI.Xaml.Input.TappedEventHandler? tappedHandler;
+### 2.3 Color changes at runtime
 
-protected override void ConnectHandler(Segmented platformView)
-{
-    base.ConnectHandler(platformView);
-    platformView.SelectionChanged += OnSelectionChanged;
-    tappedHandler = OnTapped;
-    platformView.AddHandler(Microsoft.UI.Xaml.UIElement.TappedEvent, tappedHandler, handledEventsToo: true);
-}
+Verified: changing `TintColor`, `TextColor`, `SelectedTextColor` and `DisabledTintColor` while the control is
+shown updates it immediately, including the border and the segments created later by replacing `Children`.
 
-protected override void DisconnectHandler(Segmented platformView)
-{
-    platformView.SelectionChanged -= OnSelectionChanged;
-    if (tappedHandler is not null)
-        platformView.RemoveHandler(Microsoft.UI.Xaml.UIElement.TappedEvent, tappedHandler);
-    base.DisconnectHandler(platformView);
-}
-```
+### 2.4 Disabled colors match iOS/Android
 
-Keyboard selection (Space/Enter) doesn't raise `SegmentTapped`. Decide whether it should (iOS raises it
-for every selection, so probably yes).
+- Disabled, unselected segment: `DisabledBackgroundColor` background, `DisabledTextColor` text.
+- Disabled, selected segment: `DisabledTintColor` background, `DisabledTextColor` text (new `DisabledSelected`
+  visual state; `SegmentedItem` uses a custom `VisualStateManager` to route disabled items there, because
+  ListViewItem keeps driving Normal/Selected while disabled).
+- Border while disabled: `DisabledTintColor`.
+- The extra 0.55 opacity on disabled segments is gone, so the configured colors show as set.
 
-### 2.3 Verify color changes at runtime
+**Open decision:** the library defaults are `DisabledBackgroundColor = Gray` and `DisabledTextColor = Gray`, so
+with default colors a disabled unselected segment's text is invisible (gray on gray). Consider a lighter
+default text color, or document it.
 
-The phase 1 handler fix keeps one brush per resource key and only changes its `Color`, and sets the unselected
-`Foreground` and the `BorderBrush` directly. Starting colors are verified. Changes after the control is shown
-should update live, but that's **not tested yet**: use the sample's "Tint Color Change", "Text Color",
-"Change Selected Text Color" and "Change Disabled Tint Color" buttons, including while hovering and pressing.
-Also check that setting a color to `null` keeps the previous color (current behavior) and decide whether it
-should fall back to the theme instead.
+### 2.5 Option changes update segments in place
 
-### 2.4 `DisabledTintColor` behaves differently from iOS
+Changing an option's `Text` or `IsEnabled` updates the existing segment (selection and focus are kept).
+Replacing `Children` with a different number of options rebuilds the segments and keeps `SelectedSegment`.
 
-On iOS, `DisabledTintColor` is the selected segment's color when the control is disabled (the
-`ISegmentedControl` doc says the same). On Windows it only colors the border, and a disabled selected
-item shows `DisabledBackgroundColor`. Also, the `Disabled` visual state applies 0.55 opacity on top of
-the custom disabled colors, so they look faded. Add a `DisabledSelected` treatment (selected + disabled →
-`DisabledTintColor`) and drop the extra opacity when custom colors are set, or document the difference.
+### 2.6 `GroupToggleBehavior` can change at runtime
 
-### 2.5 Children updates rebuild everything and lose focus
+Switching to `None` clears the visible selection (taps still raise `SegmentTapped`); switching back to
+`Radio` restores `SelectedSegment`.
 
-`SegmentedControlOption.Text`/`IsEnabled` changes call `NotifySegmentChanged`, which re-maps `Children`,
-which clears and recreates every `SegmentedItem`. That works, but it drops keyboard focus and may flash.
-Update the existing items in place when the count didn't change, and rebuild only when it did.
+### 2.7 Sizing follows `HorizontalOptions`
 
-### 2.6 `GroupToggleBehavior` is read only once
-
-`SelectionMode` is set in `CreatePlatformView` only. Add a mapper entry so changing `GroupToggleBehavior`
-at runtime switches between `Single` and `None` (clear `SelectedIndex` when switching to `None`).
-
-### 2.7 Sizing and layout parity
-
-- The style sets `HorizontalAlignment="Left"`. The handler overrides it with `Stretch`, which ignores the
-  MAUI `HorizontalOptions`. Let the MAUI layout decide (remove the override and check `Fill`/`Start`/`Center`).
-- Check that `EqualPanel` gives equal-width segments when the control is narrower than its content
-  (long texts), and that `HeightRequest` is respected.
-- `CornerRadius`: iOS/Android show rounded corners by default. Confirm `ControlCornerRadius` looks right
-  next to the other platforms.
+`EqualPanel` (from the Community Toolkit) reported the full available width when stretched, so `Start`,
+`Center` and `End` looked like `Fill`, and its arrange step overwrote the measured item size, which left
+segments in stale positions. It now measures the natural size (widest segment × count) and stretches only
+when arranged. Verified `Fill`, `Start`, `Center`, `End`, and switching back.
 
 ### 2.8 Accessibility
 
-- Set `AutomationProperties.Name` on each `SegmentedItem` from the option `Text`, so Narrator reads it.
-- Pass the control's `SemanticProperties.Description` through to the `Segmented`
-  (`AutomationProperties.Name`), the way the base `ViewHandler` mapper does for other controls.
-- Check Narrator reads "selected"/"not selected" and the position ("2 of 3").
+- `Segmented` is exposed as a `List` (it was an unnamed `Custom` element) with the Selection pattern.
+- Each segment is a `ListItem` named after its text, with position ("2 of 3"), `IsSelected`, and a working
+  `Select()`; selection changes raise the UIA selection events.
+- Verified with UI Automation. **Not yet tried with Narrator itself.**
 
 ## Phase 3: Manual test plan (Windows)
 
@@ -187,13 +166,14 @@ dotnet build samples\SegmentedControlSamples\SegmentedControlSamples.csproj -f n
 
 - [ ] The control renders with equal-width segments and a border, in light, dark and high-contrast themes
 - [ ] Switching the Windows theme while the app runs keeps custom colors
-- [ ] The starting `SelectedSegment` is shown; clicking a segment updates `SelectedSegment` and raises `ValueChanged` once
+- [x] (automated, phase 2) The starting `SelectedSegment` is shown; clicking a segment updates `SelectedSegment` and raises `ValueChanged` once
 - [ ] `SegmentTapped` fires on click, and not for disabled segments
-- [ ] Setting `SelectedSegment` from code or a binding updates the UI; `-1` clears the selection; an out-of-range value doesn't crash
-- [ ] `GroupToggleBehavior="None"` allows no selection but still raises `SegmentTapped`
+- [x] (automated, phase 2) Setting `SelectedSegment` from code updates the UI; an out-of-range value doesn't crash
+- [ ] Setting `SelectedSegment` through a binding works; `-1` clears the selection
+- [x] (automated, phase 2) `GroupToggleBehavior="None"` allows no selection but still raises `SegmentTapped`
 - [ ] All colors apply at startup **and** when changed at runtime (including pressed / pointer-over)
 - [ ] Disabling the control or a single option (`SegmentedControlOption.IsEnabled`) looks right and blocks input
-- [ ] Changing an option's `Text` at runtime, or replacing `Children`, updates the segments and keeps the selection
+- [x] (automated, phase 2) Changing an option's `Text` at runtime, or replacing `Children`, updates the segments and keeps the selection
 - [ ] `FontSize` and `Padding` apply
 - [ ] Keyboard: Tab into the control, arrow keys move focus (reversed in `FlowDirection="RightToLeft"`), Space/Enter selects, arrows skip or stop at disabled items without trapping focus
 - [ ] Narrator reads each segment's text and selection state

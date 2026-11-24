@@ -84,29 +84,13 @@ public partial class EqualPanel : Panel
             return new WinSize(0, 0);
         }
 
-        bool stretch = Orientation switch
-        {
-            Microsoft.UI.Xaml.Controls.Orientation.Horizontal => HorizontalAlignment is Microsoft.UI.Xaml.HorizontalAlignment.Stretch && !double.IsInfinity(availableSize.Width),
-            _ => VerticalAlignment is Microsoft.UI.Xaml.VerticalAlignment.Stretch && !double.IsInfinity(availableSize.Height),
-        };
-
-        double uvU, uvV;
+        // Always report the natural size (widest item x count). The Community Toolkit version reported the whole
+        // available size when stretched, which made MAUI's Start/Center/End layouts as wide as Fill.
+        // Stretching still happens: ArrangeOverride widens the items to fill whatever size the panel is given.
         double maxU = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? maxItemWidth : maxItemHeight;
         double maxV = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? maxItemHeight : maxItemWidth;
-        double availableU = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal ? availableSize.Width : availableSize.Height;
-
-        if (stretch)
-        {
-            double totalU = availableU - (Spacing * (visibleItemsCount - 1));
-            maxU = totalU / visibleItemsCount;
-            uvU = availableU;
-            uvV = maxV;
-        }
-        else
-        {
-            uvU = (maxU * visibleItemsCount) + (Spacing * (visibleItemsCount - 1));
-            uvV = maxV;
-        }
+        double uvU = (maxU * visibleItemsCount) + (Spacing * (visibleItemsCount - 1));
+        double uvV = maxV;
 
         return Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal
             ? new WinSize(uvU, uvV)
@@ -116,33 +100,26 @@ public partial class EqualPanel : Panel
     /// <inheritdoc/>
     protected override WinSize ArrangeOverride(WinSize finalSize)
     {
+        // Use locals only: the Community Toolkit version wrote the stretched size back into maxItemWidth/Height,
+        // so an arrange that WinUI ran without a new measure (cached) reused a stale, too-wide item size.
+        bool horizontal = Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal;
+        double finalSizeU = horizontal ? finalSize.Width : finalSize.Height;
+        double itemU = horizontal ? maxItemWidth : maxItemHeight;
+        double itemV = horizontal ? maxItemHeight : maxItemWidth;
+
+        if (visibleItemsCount > 0 && finalSizeU > visibleItemsCount * itemU + (Spacing * (visibleItemsCount - 1)))
+        {
+            itemU = (finalSizeU - (Spacing * (visibleItemsCount - 1))) / visibleItemsCount;
+        }
+
         double posU = 0;
-        ref double maxItemU = ref maxItemWidth;
-        double finalSizeU = finalSize.Width;
-
-        if (Orientation is Microsoft.UI.Xaml.Controls.Orientation.Vertical)
-        {
-            maxItemU = ref maxItemHeight;
-            finalSizeU = finalSize.Height;
-        }
-
-        if (finalSizeU > visibleItemsCount * maxItemU + (Spacing * (visibleItemsCount - 1)))
-        {
-            maxItemU = (finalSizeU - (Spacing * (visibleItemsCount - 1))) / visibleItemsCount;
-        }
-
         foreach (var child in Children.Where(e => e.Visibility == Microsoft.UI.Xaml.Visibility.Visible))
         {
-            if (Orientation is Microsoft.UI.Xaml.Controls.Orientation.Horizontal)
-            {
-                child.Arrange(new WinRect(posU, 0, maxItemWidth, maxItemHeight));
-            }
-            else
-            {
-                child.Arrange(new WinRect(0, posU, maxItemWidth, maxItemHeight));
-            }
+            child.Arrange(horizontal
+                ? new WinRect(posU, 0, itemU, itemV)
+                : new WinRect(0, posU, itemV, itemU));
 
-            posU += maxItemU + Spacing;
+            posU += itemU + Spacing;
         }
 
         return finalSize;
