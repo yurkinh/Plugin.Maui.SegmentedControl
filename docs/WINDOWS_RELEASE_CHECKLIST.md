@@ -155,7 +155,7 @@ when arranged. Verified `Fill`, `Start`, `Center`, `End`, and switching back.
   `Select()`; selection changes raise the UIA selection events.
 - Verified with UI Automation. **Not yet tried with Narrator itself.**
 
-## Phase 3: Manual test plan (Windows)
+## Phase 3: Test plan (Windows)
 
 Run `samples/SegmentedControlSamples` (or `samples/Test.SegmentedControl`) on Windows. Use F5 in
 Visual Studio with the `net10.0-windows10.0.19041.0` target, or:
@@ -164,23 +164,37 @@ Visual Studio with the `net10.0-windows10.0.19041.0` target, or:
 dotnet build samples\SegmentedControlSamples\SegmentedControlSamples.csproj -f net10.0-windows10.0.19041.0 -t:Run
 ```
 
-- [ ] The control renders with equal-width segments and a border, in light, dark and high-contrast themes
-- [ ] Switching the Windows theme while the app runs keeps custom colors
-- [x] (automated, phase 2) The starting `SelectedSegment` is shown; clicking a segment updates `SelectedSegment` and raises `ValueChanged` once
-- [ ] `SegmentTapped` fires on click, and not for disabled segments
-- [x] (automated, phase 2) Setting `SelectedSegment` from code updates the UI; an out-of-range value doesn't crash
-- [ ] Setting `SelectedSegment` through a binding works; `-1` clears the selection
-- [x] (automated, phase 2) `GroupToggleBehavior="None"` allows no selection but still raises `SegmentTapped`
-- [ ] All colors apply at startup **and** when changed at runtime (including pressed / pointer-over)
-- [ ] Disabling the control or a single option (`SegmentedControlOption.IsEnabled`) looks right and blocks input
-- [x] (automated, phase 2) Changing an option's `Text` at runtime, or replacing `Children`, updates the segments and keeps the selection
-- [ ] `FontSize` and `Padding` apply
-- [ ] Keyboard: Tab into the control, arrow keys move focus (reversed in `FlowDirection="RightToLeft"`), Space/Enter selects, arrows skip or stop at disabled items without trapping focus
-- [ ] Narrator reads each segment's text and selection state
-- [ ] Navigate away and back (handler disconnect/reconnect): no crash, events still work
-- [ ] Repeat the key checks with the **packed `.nupkg`** (section 1.2), not just the project reference
+Checked items were verified by driving the sample through UI Automation (button presses, real mouse clicks
+and key presses, screenshots, event log), unpackaged (`WindowsPackageType=None`), with the project reference
+and again with the packed `.nupkg`.
 
-Consider adding a Windows job to CI that builds the Windows sample, so a broken handler can't be merged again.
+- [x] Equal-width segments with a border, in the **dark and light** themes
+- [ ] Same in a **high-contrast** theme (needs the Windows setting; not automated)
+- [x] Switching the app theme while running keeps custom colors
+- [x] The starting `SelectedSegment` is shown; clicking a segment updates `SelectedSegment` and raises `ValueChanged` once
+- [x] `SegmentTapped` fires on click, and not for disabled segments (clicking a disabled segment does nothing)
+- [x] Setting `SelectedSegment` from code updates the UI; `-1` clears the selection; an out-of-range value doesn't crash
+- [x] A bound `SelectedSegment` / bound option `Text` / `SegmentTapped` → command round trip (player sample: Play ⇄ STOP)
+- [x] `GroupToggleBehavior="None"` allows no selection but still raises `SegmentTapped`
+- [x] All colors apply at startup and when changed at runtime; pointer-over uses the theme hover fill
+- [ ] Pressed colors (needs a held mouse button; not automated)
+- [x] Disabling the control or a single option looks right and blocks input
+- [x] Changing an option's `Text` at runtime, or replacing `Children`, updates the segments and keeps the selection
+- [x] `FontSize` and `Padding` apply (and change at runtime)
+- [x] Keyboard: arrows move focus, Space/Enter select, the last segment stops, a disabled neighbour is skipped
+  without trapping focus (Tab leaves the control), arrows are reversed in `FlowDirection="RightToLeft"`
+- [ ] Narrator reads each segment's text, "n of m" and selection state (the UIA data is verified: names,
+  positions, `IsSelected`, `Select()`; listening with Narrator isn't automated)
+- [x] Remove the control and add it back, and navigate between tabs: no crash, selection kept, events still fire
+- [x] Key checks repeated with the **packed `.nupkg`** (local feed)
+- [ ] MSIX-packaged app (only unpackaged was tested)
+
+Notes:
+
+- A click that has to activate the window first selects the segment but doesn't raise `SegmentTapped`
+  (WinUI doesn't raise `Tapped` for an activation click). Seen once in testing; normal WinUI behaviour.
+- Found and fixed in the sample: `SegControlTest2.xaml`'s `EventToCommandBehavior` had no `BindingContext`
+  (toolkit behaviors don't inherit it), so the Play/STOP command never ran on any platform.
 
 ## Phase 4: Minor clean-up
 

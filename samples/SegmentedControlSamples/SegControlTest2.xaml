@@ -53,8 +53,10 @@
             ValueChanged="SegmentedControl_ValueChanged">
 
             <ctrl:SegmentedControl.Behaviors>
+                <!--  Toolkit behaviors don't inherit the control's BindingContext; pass it explicitly.  -->
                 <toolkit:EventToCommandBehavior
                     x:TypeArguments="ctrl:SegmentTappedEventArgs"
+                    BindingContext="{Binding Source={x:Reference SegmentedControl}, Path=BindingContext, x:DataType=ctrl:SegmentedControl}"
                     Command="{Binding SegmentTappedCommand}"
                     EventName="SegmentTapped" />
             </ctrl:SegmentedControl.Behaviors>
