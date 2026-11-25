@@ -50,7 +50,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="Control\" />
-	  <None Remove="Platforms\iOS\" />
+	  <None Remove="Platforms\Apple\" />
 	  <None Remove="Platforms\Android\" />
 	  <None Remove="Platforms\Android\Resources\color\segmented_control_text.xml" />
 	  <None Remove="Platforms\Android\Resources\drawable\segmented_control_background.xml" />
@@ -60,7 +60,6 @@
 	  <None Remove="Platforms\Android\Resources\layout\RadioGroup.axml" />
 	  <None Remove="Platforms\Android\Resources\values\colors.xml" />
 	  <None Remove="Extensions\" />
-	  <None Remove="Platforms\MacCatalyst\" />
 	  <None Remove="Platforms\Windows\" />
 	  <None Remove="Platforms\Windows\NativeSegmented\" />
 	  <None Remove="Platforms\Windows\Themes\" />
@@ -68,14 +67,18 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Control\" />
-	  <Folder Include="Platforms\iOS\" />
+	  <Folder Include="Platforms\Apple\" />
 	  <Folder Include="Platforms\Android\" />
 	  <Folder Include="Extensions\" />
-	  <Folder Include="Platforms\MacCatalyst\" />
 	  <Folder Include="Platforms\Windows\" />
 	  <Folder Include="Platforms\Windows\NativeSegmented\" />
 	  <Folder Include="Platforms\Windows\Themes\" />
 	  <Folder Include="Handlers\" />
+	</ItemGroup>
+	<!-- Platforms\Apple\ holds the handler shared by iOS and Mac Catalyst. MAUI single-project only compiles
+	     Platforms\<current platform>\ by default, so the shared folder is declared here. -->
+	<ItemGroup>
+	  <MauiPlatformSpecificFolder Include="Platforms\Apple\" TargetPlatformIdentifiers="ios;maccatalyst" />
 	</ItemGroup>
 	<!-- Platforms\Windows\**\*.xaml is included as a WinUI Page by the MAUI SDK automatically.
 	     Do not add explicit <Page> items: duplicates make XamlCompiler.exe fail silently (exit code 1). -->
