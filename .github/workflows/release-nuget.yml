@@ -15,6 +15,9 @@ jobs:
 
     runs-on: windows-latest
 
+    # NUGET_USER is a secret of the "release" environment; the job must declare it to read it.
+    environment: release
+
     permissions:
       id-token: write   # Required for NuGet trusted publishing (OIDC)
       contents: read
