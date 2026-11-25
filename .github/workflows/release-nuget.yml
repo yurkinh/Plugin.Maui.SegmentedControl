@@ -2,25 +2,35 @@ name: Create a release on NuGet
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Push the package to NuGet. Leave unchecked for a dry run that only builds, packs and uploads the .nupkg as a workflow artifact."
+        type: boolean
+        default: false
   push:
     tags:
-    - "v[0-9]+.[0-9]+.[0-9]+"    
+    - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
   release-nuget:
-  
+
     runs-on: windows-latest
 
     permissions:
       id-token: write   # Required for NuGet trusted publishing (OIDC)
       contents: read
 
+    env:
+      # Tag pushes always publish; manual runs publish only when the "publish" box is checked.
+      PUBLISH: ${{ github.event_name == 'push' || inputs.publish }}
+
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET 10
+      - name: Setup .NET 11
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '11.0.x'
       - name: Verify commit exists in origin/main
+        if: env.PUBLISH == 'true'
         run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
           git branch --remote --contains | grep origin/main
@@ -30,10 +40,20 @@ jobs:
         run: dotnet restore src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj
       - name: Build and Pack
         run: dotnet pack src/Plugin.Maui.SegmentedControl/Plugin.Maui.SegmentedControl.csproj -c Release --no-restore
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            src/Plugin.Maui.SegmentedControl/bin/Release/*.nupkg
+            src/Plugin.Maui.SegmentedControl/bin/Release/*.snupkg
+          if-no-files-found: error
       - name: NuGet login (OIDC)
+        if: env.PUBLISH == 'true'
         id: login
         uses: NuGet/login@v1
         with:
           user: ${{ secrets.NUGET_USER }}  # nuget.org profile name, NOT email
       - name: Push to NuGet
+        if: env.PUBLISH == 'true'
         run: dotnet nuget push src\Plugin.Maui.SegmentedControl\bin\Release\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate

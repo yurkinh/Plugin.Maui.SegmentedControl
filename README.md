@@ -2,15 +2,16 @@
 .NET MAUI Port of Alex Rainman XF Segmented control https://github.com/alexrainman/SegmentedControl
 ### Setup
 * Available on NuGet: https://www.nuget.org/packages/Plugin.Maui.SegmentedControl/
+* Version 3.x targets .NET 11 / .NET MAUI 11. For .NET 10 use the 2.x releases.
 
 
 **Platform Support**
 
 |Platform|Supported|Version|Renderer|
 | ------------------- | :-----------: | :-----------: | :------------------: |
-|iOS Unified|Yes|iOS 8.1+|UISegmentedControl|
-|Android|Yes|API 18+|RadioGroup|
-|Mac OS  |Yes| 11.0+|UISegmentedControl|
+|iOS|Yes|iOS 15.0+|UISegmentedControl|
+|Android|Yes|API 24+|RadioGroup|
+|Mac Catalyst|Yes|17.0+|UISegmentedControl|
 |Windows|Yes|10.0.19041+|WinUI 3 Segmented (Community Toolkit port)|
 
 ### Screenshot

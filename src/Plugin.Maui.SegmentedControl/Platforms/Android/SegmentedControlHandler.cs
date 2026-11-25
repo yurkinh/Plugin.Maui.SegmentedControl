@@ -538,7 +538,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
     {
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
         {
-            var v = (RadioButton)handler.PlatformView.GetChildAt(i);
+            if (handler.PlatformView.GetChildAt(i) is not RadioButton v) continue;
             v.SetTextSize(Android.Util.ComplexUnitType.Sp, (float)control.FontSize);
         }
     }
@@ -548,7 +548,7 @@ public class SegmentedControlHandler : ViewHandler<SegmentedControl, RadioGroup>
         var padding = control.Padding;
         for (int i = 0; i < handler.PlatformView.ChildCount; i++)
         {
-            var v = (RadioButton)handler.PlatformView.GetChildAt(i);
+            if (handler.PlatformView.GetChildAt(i) is not RadioButton v) continue;
             v.SetPadding(
                 (int)handler.Context.ToPixels(padding.Left),
                 (int)handler.Context.ToPixels(padding.Top),
